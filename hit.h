@@ -24,8 +24,8 @@
 class Hit
 {
 public:
-    double t;
-    Vector N;
+    double t; // Distance between the intersection point and the origin of the ray.
+    Vector N; // The normal vector between the intersection point and the origin of the ray.
 
     Hit(const double t, const Vector &normal)
         : t(t), N(normal)

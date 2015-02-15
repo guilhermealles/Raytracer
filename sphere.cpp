@@ -38,13 +38,30 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin in *t (see example).
     ****************************************************/
 
-    // place holder for actual intersection calculation
-
+    Vector eyeObject = position - ray.O;
+    int v = eyeObject.dot(ray.D);
+    double disc = (r*r) - ((eyeObject.dot(eyeObject) - (v*v)));
+    if (disc < 0)
+    {
+        return Hit::NO_HIT();
+    }
+    else
+    {
+        double d = sqrt(disc);
+        double distaceFromEye = v - d; // Distance between the intersection point and the eye origin.
+        
+        Vector normal;
+        
+        return Hit(distaceFromEye, normal);
+    }
+    
+    /*
     Vector OC = (position - ray.O).normalized();
     if (OC.dot(ray.D) < 0.999) {
         return Hit::NO_HIT();
     }
     double t = 1000;
+     */
 
     /****************************************************
     * RT1.2: NORMAL CALCULATION
@@ -55,7 +72,7 @@ Hit Sphere::intersect(const Ray &ray)
     * Insert calculation of the sphere's normal at the intersection point.
     ****************************************************/
 
-    Vector N /* = ... */;
+    //Vector N /* = ... */;
 
-    return Hit(t,N);
+    //return Hit(t,N);
 }
