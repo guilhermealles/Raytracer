@@ -38,6 +38,8 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin in *t (see example).
     ****************************************************/
     
+    /* ----- Attempt 1 -----
+     
     Vector eyeObject = position - ray.O;
     int v = eyeObject.dot(ray.D);
     double disc = (r*r) - ((eyeObject.dot(eyeObject) - (v*v)));
@@ -54,9 +56,10 @@ Hit Sphere::intersect(const Ray &ray)
         
         return Hit(distaceFromEye, normal);
     }
+     */
     
     
-    /*
+    /* ----- Original code -----
     Vector OC = (position - ray.O).normalized();
     if (OC.dot(ray.D) < 0.999) {
         return Hit::NO_HIT();
