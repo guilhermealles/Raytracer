@@ -57,8 +57,18 @@ Color Scene::trace(const Ray &ray)
     *        Color*Color        dito
     *        pow(a,b)           a to the power of b
     ****************************************************/
+    
+    
+    Vector aux_light(lights.at(0)->position - hit);
+    double norm = sqrt(aux_light.x * aux_light.x + aux_light.y * aux_light.y + aux_light.z * aux_light.z);
+    Vector unit_light(aux_light/norm);
+    
+    double cosine_factor = unit_light.dot(N);
 
-    Color color = material->color;                  // place holder
+    int r = material->kd*cosine_factor*material->color.r + material->ka * material->color.r;
+    int g = material->kd*cosine_factor*material->color.g + material->ka * material->color.g;
+    int b = material->kd*cosine_factor*material->color.b + material->ka * material->color.b;
+    Color color(r, g, b); // place holder
 
     return color;
 }
