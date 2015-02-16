@@ -38,21 +38,12 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin in *t (see example).
     ****************************************************/
     
-<<<<<<< HEAD
     double a = ray.D.x*ray.D.x + ray.D.y*ray.D.y + ray.D.z*ray.D.z;
     double b = 2 * (ray.D.x * (ray.O.x - position.x) + ray.D.y * (ray.O.y - position.y) + ray.D.z * (ray.O.z - position.z));
     double c = (ray.O.x - position.x)*(ray.O.x - position.x) + (ray.O.y - position.y)*(ray.O.y - position.y) + (ray.O.z - position.z)*(ray.O.z - position.z) - r*r;
     double delta = b*b - 4*a*c;
     
     if (delta < 0) // No intersection
-=======
-    /* ----- Attempt 1 -----
-     
-    Vector eyeObject = position - ray.O;
-    int v = eyeObject.dot(ray.D);
-    double disc = (r*r) - (eyeObject.dot(eyeObject) - (v*v));
-    if (disc < 0)
->>>>>>> FETCH_HEAD
     {
         return Hit::NO_HIT();
     }
@@ -61,30 +52,18 @@ Hit Sphere::intersect(const Ray &ray)
         // Calculates the distance between the intersection point and the eye origin
         double t = ((-1)*b - sqrt(delta))/2*a;
         
-        Vector normal;
         double x = ray.O.x + t * (ray.O.x - ray.D.x);
         double y = ray.O.y + t * (ray.O.y - ray.D.y);
         double z = ray.O.z + t * (ray.O.z - ray.D.z);
         
-<<<<<<< HEAD
+        Vector normal;
         Vector intersection_point(x,y,z);
         
         double distance = sqrt((intersection_point.x - ray.O.x)*(intersection_point.x - ray.O.x) + (intersection_point.y - ray.O.y)*(intersection_point.y - ray.O.y) + (intersection_point.z - ray.O.z)*(intersection_point.z - ray.O.z));
         
         return Hit(distance, normal);
-=======
-        return Hit(distaceFromEye, normal);
     }
-     */
-    
-    
-    /* ----- Original code -----
-    Vector OC = (position - ray.O).normalized();
-    if (OC.dot(ray.D) < 0.999) {
-        return Hit::NO_HIT();
->>>>>>> FETCH_HEAD
-    }
-    
+
 
     /****************************************************
     * RT1.2: NORMAL CALCULATION
