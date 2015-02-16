@@ -42,7 +42,7 @@ Hit Sphere::intersect(const Ray &ray)
      
     Vector eyeObject = position - ray.O;
     int v = eyeObject.dot(ray.D);
-    double disc = (r*r) - ((eyeObject.dot(eyeObject) - (v*v)));
+    double disc = (r*r) - (eyeObject.dot(eyeObject) - (v*v));
     if (disc < 0)
     {
         return Hit::NO_HIT();
