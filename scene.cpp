@@ -60,16 +60,18 @@ Color Scene::trace(const Ray &ray)
     
     
     Vector aux_light(lights.at(0)->position - hit);
-    double norm = sqrt(aux_light.x * aux_light.x + aux_light.y * aux_light.y + aux_light.z * aux_light.z);
+    double norm = sqrt(pow(aux_light.x, 2) + pow(aux_light.y, 2) + pow(aux_light.z, 2));
     Vector unit_light(aux_light/norm);
     
-    double cosine_factor = unit_light.dot(N);
-
-    int r = material->kd*cosine_factor*material->color.r + material->ka * material->color.r;
-    int g = material->kd*cosine_factor*material->color.g + material->ka * material->color.g;
-    int b = material->kd*cosine_factor*material->color.b + material->ka * material->color.b;
-    Color color(r, g, b); // place holder
-
+    double cosine_factor = N.normalized().dot(unit_light.normalized());
+    
+    
+    double r = material->kd*cosine_factor*material->color.r;
+    double g = material->kd*cosine_factor*material->color.g;
+    double b = material->kd*cosine_factor*material->color.b;
+     
+    Color color(r, g, b);
+    
     return color;
 }
 
