@@ -43,6 +43,11 @@ Hit Sphere::intersect(const Ray &ray)
     double c = (ray.O.x - position.x)*(ray.O.x - position.x) + (ray.O.y - position.y)*(ray.O.y - position.y) + (ray.O.z - position.z)*(ray.O.z - position.z) - r*r;
     double delta = b*b - 4*a*c;
     
+    // Intersection point
+    double x;
+    double y;
+    double z;
+    
     if (delta < 0) // No intersection
     {
         return Hit::NO_HIT();
@@ -52,11 +57,11 @@ Hit Sphere::intersect(const Ray &ray)
         // Calculates the distance between the intersection point and the eye origin
         double t = ((-1)*b - sqrt(delta))/2*a;
         
-        double x = ray.O.x + t * (ray.O.x - ray.D.x);
-        double y = ray.O.y + t * (ray.O.y - ray.D.y);
-        double z = ray.O.z + t * (ray.O.z - ray.D.z);
+        x = ray.O.x + t * (ray.O.x - ray.D.x);
+        y = ray.O.y + t * (ray.O.y - ray.D.y);
+        z = ray.O.z + t * (ray.O.z - ray.D.z);
         
-        Vector normal;
+        Vector normal((x-position.x)/r, (y-position.y)/r, (z-position.z)/r);
         Vector intersection_point(x,y,z);
         
         double distance = sqrt((intersection_point.x - ray.O.x)*(intersection_point.x - ray.O.x) + (intersection_point.y - ray.O.y)*(intersection_point.y - ray.O.y) + (intersection_point.z - ray.O.z)*(intersection_point.z - ray.O.z));
@@ -73,8 +78,5 @@ Hit Sphere::intersect(const Ray &ray)
     * 
     * Insert calculation of the sphere's normal at the intersection point.
     ****************************************************/
-
-    //Vector N /* = ... */;
-
-    //return Hit(t,N);
+    
 }
