@@ -44,6 +44,12 @@ Triple parseTriple(const YAML::Node& node)
     return t;
 }
 
+string parseString(const YAML::Node& node)
+{
+    string s = node[0];
+    return s;
+}
+
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
     Material *m = new Material();
@@ -115,6 +121,9 @@ bool Raytracer::readScene(const std::string& inputFilename)
 
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));
+            
+            render_mode = parseString(doc["RenderMode"]);
+            cout << "Render mode: " << render_mode << endl;
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];

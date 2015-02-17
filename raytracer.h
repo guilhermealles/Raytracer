@@ -22,9 +22,11 @@
 #include "scene.h"
 #include "yaml/yaml.h"
 
-class Raytracer {
+class Raytracer
+{
 private:
     Scene *scene;
+    string render_mode;
 
     // Couple of private functions for parsing YAML nodes
     Material* parseMaterial(const YAML::Node& node);

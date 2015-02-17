@@ -31,6 +31,7 @@ private:
     Triple eye;
 public:
     Color trace(const Ray &ray);
+    Color zBufferTrace(const Ray &ray);
     void render(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);

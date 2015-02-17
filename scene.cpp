@@ -62,19 +62,30 @@ Color Scene::trace(const Ray &ray)
     Vector unit_light = aux_light.normalized();
     
     double cosine_factor = N.normalized().dot(unit_light);
-    if (cosine_factor < 0) cosine_factor = 0;
-    
-    Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
-    double specular_factor = material->ks * pow((reflection_vector.dot(V)),30);
-    if (N.normalized().dot(unit_light) < 0) specular_factor = 0;
+    double specular_factor;
+    if (cosine_factor < 0)
+    {
+        cosine_factor = 0;
+        specular_factor = 0;
+    }
+    else
+    {
+        Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
+        specular_factor = material->ks * pow((reflection_vector.dot(V)),material->n);
+    }
     
     double r = (specular_factor * material->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
-    double g = (specular_factor * material->color.g) +  + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
-    double b = (specular_factor * material->color.b) +  + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
+    double g = (specular_factor * material->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
+    double b = (specular_factor * material->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
      
     Color color(r,g,b);
     
     return color;
+}
+
+Color Scene::zBufferTrace(const Ray &ray)
+{
+    return Color(0,0,0);
 }
 
 void Scene::render(Image &img)
