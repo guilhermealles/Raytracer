@@ -46,7 +46,17 @@ Triple parseTriple(const YAML::Node& node)
 
 string parseString(const YAML::Node& node)
 {
-    string s = node[0];
+    if(const YAML::Node *pName = node.FindValue("RenderMode"))
+    {
+        string name;
+        *pName >> name;
+        std::cout << "Key 'RenderMode' exists, with value '" << name << "'\n";
+    }
+    else
+    {
+        std::cout << "Key 'RenderMode' doesn't exist\n";
+    }
+    string s;
     return s;
 }
 
@@ -122,8 +132,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));
             
-            render_mode = parseString(doc["RenderMode"]);
-            cout << "Render mode: " << render_mode << endl;
+            //render_mode = parseString(doc["RenderMode"]);
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
