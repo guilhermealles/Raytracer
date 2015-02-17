@@ -79,22 +79,9 @@ Color Scene::trace(const Ray &ray)
     double g = (specular_factor * material->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
     double b = (specular_factor * material->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
     if (cosine_factor < 0) cosine_factor = 0;
+
     
-    
-    /* eu tinha feito isso manualmente, nao achei que nao tratar o 0 daria erro, dai tentei enxugar ali embaixo e resultou no negocio certo
-    if (N.x < 0) N.x = (N.x / 2) + 0.5;
-    if (N.y < 0) N.y = (N.y / 2) + 0.5;
-    if (N.z < 0) N.z = (N.z / 2) + 0.5;
-    if (N.x > 0) N.x = (N.x / 2) + 0.5;
-    if (N.y > 0) N.y = (N.y / 2) + 0.5;
-    if (N.z > 0) N.z = (N.z / 2) + 0.5;*/
-    
-    
-    // transformar de -1,1 a 0,1
-    N = N / 2 + 0.5;
-    
-    
-    Color color(N);
+    Color color(r,g,b);
     return color;
 }
 
@@ -123,6 +110,32 @@ Color Scene::zBufferTrace(const Ray &ray)
     return Color(0,0,0);
 }
 
+Color Scene::normalBufferTrace(const Ray &ray)
+{
+    // Find hit object and distance
+    Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
+    Object *obj = NULL;
+    
+    for (unsigned int i = 0; i < objects.size(); ++i) {
+        Hit hit(objects[i]->intersect(ray));
+        if (hit.t<min_hit.t) {
+            min_hit = hit;
+            obj = objects[i];
+        }
+    }
+    
+    
+    // No hit? Return background color.
+    if (!obj) return Color(0.0, 0.0, 0.0);
+    Vector N = min_hit.N;                          //the normal at hit point
+    
+    // transformar de -1,1 a 0,1
+    N = N / 2 + 0.5;
+    
+    
+    Color color(N);
+    return color;
+}
 
 void Scene::render(Image &img)
 {
