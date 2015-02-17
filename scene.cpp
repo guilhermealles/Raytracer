@@ -58,19 +58,19 @@ Color Scene::trace(const Ray &ray)
     *        pow(a,b)           a to the power of b
     ****************************************************/
     
-    
     Vector aux_light(lights.at(0)->position - hit);
     Vector unit_light = aux_light.normalized();
     
     double cosine_factor = N.normalized().dot(unit_light);
-    if (cosine_factor < 0)
-    {
-        cosine_factor = 0;
-    }
+    if (cosine_factor < 0) cosine_factor = 0;
     
-    double r = (material->kd * cosine_factor * material->color.r);
-    double g = (material->kd * cosine_factor * material->color.g);
-    double b = (material->kd * cosine_factor * material->color.b);
+    Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
+    double specular_factor = material->ks * pow((reflection_vector.dot(V)),30);
+    if (N.normalized().dot(unit_light) < 0) specular_factor = 0;
+    
+    double r = (specular_factor * material->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
+    double g = (specular_factor * material->color.g) +  + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
+    double b = (specular_factor * material->color.b) +  + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
      
     Color color(r,g,b);
     
