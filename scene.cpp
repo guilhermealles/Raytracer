@@ -30,6 +30,7 @@ Color Scene::trace(const Ray &ray)
             obj = objects[i];
         }
     }
+    
 
     // No hit? Return background color.
     if (!obj) return Color(0.0, 0.0, 0.0);
@@ -71,15 +72,29 @@ Color Scene::trace(const Ray &ray)
     else
     {
         Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
-        specular_factor = material->ks * pow((reflection_vector.dot(V)),material->n);
+        specular_factor = material->ks * pow(cosine_factor,material->n);
     }
     
     double r = (specular_factor * material->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
     double g = (specular_factor * material->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
     double b = (specular_factor * material->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
-     
-    Color color(r,g,b);
+    if (cosine_factor < 0) cosine_factor = 0;
     
+    
+    /* eu tinha feito isso manualmente, nao achei que nao tratar o 0 daria erro, dai tentei enxugar ali embaixo e resultou no negocio certo
+    if (N.x < 0) N.x = (N.x / 2) + 0.5;
+    if (N.y < 0) N.y = (N.y / 2) + 0.5;
+    if (N.z < 0) N.z = (N.z / 2) + 0.5;
+    if (N.x > 0) N.x = (N.x / 2) + 0.5;
+    if (N.y > 0) N.y = (N.y / 2) + 0.5;
+    if (N.z > 0) N.z = (N.z / 2) + 0.5;*/
+    
+    
+    // transformar de -1,1 a 0,1
+    N = N / 2 + 0.5;
+    
+    
+    Color color(N);
     return color;
 }
 
