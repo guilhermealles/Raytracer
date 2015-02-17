@@ -100,8 +100,29 @@ Color Scene::trace(const Ray &ray)
 
 Color Scene::zBufferTrace(const Ray &ray)
 {
+    // Find hit object and distance
+    Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
+    Object *obj = NULL;
+    
+    for (unsigned int i = 0; i < objects.size(); ++i) {
+        Hit hit(objects[i]->intersect(ray));
+        if (hit.t<min_hit.t) {
+            min_hit = hit;
+            obj = objects[i];
+        }
+    }
+    
+    // No hit? Return background color.
+    if (!obj) return Color(0.0, 0.0, 0.0);
+    
+    Material *material = obj->material;            //the hit objects material
+    Point hit = ray.at(min_hit.t);                 //the hit point
+    Vector N = min_hit.N;                          //the normal at hit point
+    Vector V = -ray.D;                             //the view vector
+
     return Color(0,0,0);
 }
+
 
 void Scene::render(Image &img)
 {
