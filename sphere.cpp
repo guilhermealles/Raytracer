@@ -38,6 +38,47 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin in *t (see example).
     ****************************************************/
     
+    // Yet Another attempt
+    Vector L = position - ray.O;
+    
+    // Calculate tca (distance from the origin to the point on the ray halfway between the 2 intersection points)
+    double tca = L.dot(ray.D);
+    
+    // If it's behind the ray direction
+    if (tca < 0)
+        return Hit::NO_HIT();
+    
+    double d =  sqrt(L.dot(L) - (tca * tca));
+    
+    if (d > r) // If d > r then the ray doesn't meet the sphere
+        return Hit::NO_HIT();
+    
+    double thc = sqrt((r * r) - (d*d)); // Calculates thc
+    
+    // Points of intersections
+    double t0 = tca - thc; // First point of intersection
+    //t1 = tca + thc; // Second point of intersection
+    
+    double t = t0;
+    
+    // Coordinates of the point of intersection
+    Vector P = (ray.O + t*ray.D);
+    
+    
+    /****************************************************
+     * RT1.2: NORMAL CALCULATION
+     *
+     * Given: t, C, r
+     * Sought: N
+     *
+     * Insert calculation of the sphere's normal at the intersection point.
+     ****************************************************/
+    
+    // Normal on intersection point
+    Vector N = (P - position).normalized();
+    
+    return Hit(t,N);
+    /*
     // New Attempt
     Vector L(position-ray.O);
     double tc = L.dot(ray.D);
@@ -61,12 +102,13 @@ Hit Sphere::intersect(const Ray &ray)
             Point intersection_point(ray.O.x+(ray.D.x * t1), ray.O.y+(ray.D.y * t1), ray.O.z+(ray.D.z * t1));
             
             Vector normalV((intersection_point-position).normalized());
-            double distance = sqrt(pow(intersection_point.x - ray.O.x, 2) + pow(intersection_point.y - ray.O.y, 2) + pow(intersection_point.z-ray.O.z, 2));
+            double distance = sqrt(pow(intersection_point.x-ray.O.x, 2) + pow(intersection_point.y - ray.O.y, 2) + pow(intersection_point.z-ray.O.z, 2));
             
             return Hit(distance, normalV);
         }
         
     }
+     */
     
     /* -----Old Attempt
     double dx = ray.D.x-ray.O.x;
