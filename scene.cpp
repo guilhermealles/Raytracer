@@ -64,11 +64,11 @@ Color Scene::trace(const Ray &ray)
     
     double cosine_factor = N.normalized().dot(unit_light);
     
-    double r = material->kd * cosine_factor * material->color.r;
-    double g = material->kd * cosine_factor * material->color.g;
-    double b = material->kd * cosine_factor * material->color.b;
+    double r = lights.at(0)->color.r * material->kd * cosine_factor * material->color.r;
+    double g = lights.at(0)->color.g * material->kd * cosine_factor * material->color.g;
+    double b = lights.at(0)->color.b * material->kd * cosine_factor * material->color.b;
      
-    Color color(r, g, b);
+    Color color(r,g,b);
     
     return color;
 }
