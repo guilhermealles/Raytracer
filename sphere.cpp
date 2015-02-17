@@ -38,10 +38,21 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin in *t (see example).
     ****************************************************/
     
-    double a = ray.D.x*ray.D.x + ray.D.y*ray.D.y + ray.D.z*ray.D.z;
-    double b = 2 * (ray.D.x * (ray.O.x - position.x) + ray.D.y * (ray.O.y - position.y) + ray.D.z * (ray.O.z - position.z));
-    double c = (ray.O.x - position.x)*(ray.O.x - position.x) + (ray.O.y - position.y)*(ray.O.y - position.y) + (ray.O.z - position.z)*(ray.O.z - position.z) - r*r;
-    double delta = b*b - 4*a*c;
+    double dx = ray.D.x-ray.O.x;
+    double dy = ray.D.y-ray.O.y;
+    double dz = ray.D.z-ray.O.z;
+    
+    double a = pow(dx,2) + pow(dy,2) + pow(dz,2);
+    double b = 2*dx*(ray.O.x-position.x) + 2*dy*(ray.O.y-position.y) + 2*dz*(ray.O.z-position.z);
+    double c = pow(position.x,2) + pow(position.y,2) + pow(position.z,2) + pow(ray.O.x,2) + pow(ray.O.y,2) + pow(ray.O.z,2) + (-2*(position.x*ray.O.x + position.y*ray.O.y + position.z*ray.O.z)) - pow(r,2);
+    double delta = pow(b,2) - 4*a*c;
+     
+    
+    //double a = ray.D.x*ray.D.x + ray.D.y*ray.D.y + ray.D.z*ray.D.z;
+    //double b = 2 * (ray.D.x * (ray.O.x - position.x) + ray.D.y * (ray.O.y - position.y) + ray.D.z * (ray.O.z - position.z));
+    //double c = (ray.O.x - position.x)*(ray.O.x - position.x) + (ray.O.y - position.y)*(ray.O.y - position.y) + (ray.O.z - position.z)*(ray.O.z - position.z) - r*r;
+    //double delta = pow(b,2) - 4*a*c;
+    
     
     // Intersection point
     double x;
@@ -64,19 +75,9 @@ Hit Sphere::intersect(const Ray &ray)
         Vector normal((x-position.x)/r, (y-position.y)/r, (z-position.z)/r);
         Vector intersection_point(x,y,z);
         
-        double distance = sqrt((intersection_point.x - ray.O.x)*(intersection_point.x - ray.O.x) + (intersection_point.y - ray.O.y)*(intersection_point.y - ray.O.y) + (intersection_point.z - ray.O.z)*(intersection_point.z - ray.O.z));
+        Vector normalV((intersection_point-position).normalized());
+        double distance = sqrt(pow(intersection_point.x - ray.O.x, 2) + pow(intersection_point.y - ray.O.y, 2) + pow(intersection_point.z-ray.O.z, 2));
         
-        return Hit(distance, normal);
+        return Hit(distance, normalV);
     }
-
-
-    /****************************************************
-    * RT1.2: NORMAL CALCULATION
-    *
-    * Given: t, C, r
-    * Sought: N
-    * 
-    * Insert calculation of the sphere's normal at the intersection point.
-    ****************************************************/
-    
 }
