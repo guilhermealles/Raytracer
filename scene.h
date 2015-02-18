@@ -29,7 +29,8 @@ private:
     std::vector<Object*> objects;
     std::vector<Light*> lights;
     Triple eye;
-    double min_t = 9999999, max_t = 0;
+    double min_t;
+    double max_t;
 public:
     Color trace(const Ray &ray);
     Color zBufferTrace(const Ray &ray);
