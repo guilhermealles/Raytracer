@@ -73,4 +73,14 @@ Objects:
     kd: 0.8
     ks: 0.0
     n: 1
+- type: triangle
+  point1: [200,200,600]
+  point2: [200,350,600]
+  point3: [275,275,700]
+  material:
+    color: [1.0,0.0,1.0]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 1
 
