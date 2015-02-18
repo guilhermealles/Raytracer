@@ -119,12 +119,21 @@ bool Raytracer::readScene(const std::string& inputFilename)
         {
             YAML::Node doc;
             parser.GetNextDocument(doc);
-
+            
             // Read scene configuration options
             scene->setEye(parseTriple(doc["Eye"]));
-            const YAML::Node& renderMode = doc["RenderMode"];
-            render_mode = parseString(renderMode);
             
+            try
+            {
+                const YAML::Node& renderMode = doc["RenderMode"];
+                render_mode = parseString(renderMode);
+            }
+            catch (YAML::TypedKeyNotFound<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >)
+            {
+                render_mode = "";
+                cerr << "Warning: RenderMode not found or is invalid!" << endl;
+            }
+
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
             if (sceneObjects.GetType() != YAML::CT_SEQUENCE)
