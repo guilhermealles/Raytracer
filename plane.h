@@ -11,8 +11,6 @@
 
 #include <stdio.h>
 
-#endif /* defined(__Raytracer__plane__) */
-
 #include "object.h"
 
 class Plane : public Object
@@ -25,3 +23,7 @@ public:
     const Point q_point;
     const Vector normal;
 };
+
+#endif /* defined(__Raytracer__plane__) */
+
+

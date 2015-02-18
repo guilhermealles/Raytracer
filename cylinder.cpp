@@ -16,8 +16,9 @@ Hit Cylinder::intersect(const Ray &ray)
     double b = 2 * ray.O.x * ray.D.x + 2 * ray.O.y * ray.D.y;
     double c = pow(ray.O.x, 2) + pow(ray.O.y, 2) - 1;
     
-    double t1 = (-1)*b + ;
-    double t2;
+    double t1 = ((-1)*b + sqrt(pow(b, 2) - 4 * a * c))/2*a;
+    double t2 = ((-1)*b - sqrt(pow(b, 2) - 4 * a * c))/2*a;
     
+    return Hit::NO_HIT();
     
 }
