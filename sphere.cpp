@@ -56,7 +56,6 @@ Hit Sphere::intersect(const Ray &ray)
         {
             double t1c = sqrt(pow(r,2) - pow(d,2));
             double t1 = tc-t1c;
-            double t2 = tc+t1c;
             Point intersection_point(ray.O.x+(ray.D.x * t1), ray.O.y+(ray.D.y * t1), ray.O.z+(ray.D.z * t1));
             
             Vector normalV((intersection_point-position).normalized());
