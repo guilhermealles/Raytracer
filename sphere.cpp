@@ -38,7 +38,6 @@ Hit Sphere::intersect(const Ray &ray)
     * intersection point from the ray origin in *t (see example).
     ****************************************************/
     
-    // New Attempt
     Vector L(position-ray.O);
     double tc = L.dot(ray.D);
     

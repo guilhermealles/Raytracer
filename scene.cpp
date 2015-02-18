@@ -23,9 +23,11 @@ Color Scene::trace(const Ray &ray)
     Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
     Object *obj = NULL;
     
-    for (unsigned int i = 0; i < objects.size(); ++i) {
+    for (unsigned int i = 0; i < objects.size(); ++i)
+    {
         Hit hit(objects[i]->intersect(ray));
-        if (hit.t<min_hit.t) {
+        if (hit.t<min_hit.t)
+        {
             min_hit = hit;
             obj = objects[i];
         }
