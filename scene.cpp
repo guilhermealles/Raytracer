@@ -16,6 +16,7 @@
 
 #include "scene.h"
 #include "material.h"
+#include "stdio.h"
 #include "raytracer.h"
 
 Color Scene::trace(const Ray &ray)
@@ -75,12 +76,12 @@ Color Scene::trace(const Ray &ray)
     else
     {
         Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
-        specular_factor = material->ks * pow(cosine_factor,material->n);
+        specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
     }
     
-    double r = (specular_factor * material->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
-    double g = (specular_factor * material->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
-    double b = (specular_factor * material->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
+    double r = (specular_factor * material->color.r * lights.at(0)->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
+    double g = (specular_factor * material->color.g * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
+    double b = (specular_factor * material->color.b * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
 
     
     Color color(r,g,b);
@@ -140,7 +141,7 @@ void Scene::render(Image &img, string mode)
 {
     int w = img.width();
     int h = img.height();
-    
+    cout << mode << endl;
     if (mode == "phong")
     {
         for (int y = 0; y < h; y++)
@@ -220,6 +221,14 @@ void Scene::findMinMaxT(const Ray &ray)
             max_t = hit.t;
         }
     }
+}
+
+double Scene::max(double x, double y)
+{
+    if (x > y)
+        return x;
+    else
+        return y;
 }
 
 void Scene::addObject(Object *o)

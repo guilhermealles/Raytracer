@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     
-    string outputFileName = OUTPUT_FILE;
+    string outputFileName = "../../../Raytracer/out.png";
     
     raytracer.renderToFile(outputFileName);
 

@@ -40,6 +40,7 @@ public:
     void addObject(Object *o);
     void addLight(Light *l);
     void setEye(Triple e);
+    double max (double x, double y);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
 };
