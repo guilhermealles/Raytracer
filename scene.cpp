@@ -78,7 +78,6 @@ Color Scene::trace(const Ray &ray)
     double r = (specular_factor * material->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
     double g = (specular_factor * material->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
     double b = (specular_factor * material->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
-    if (cosine_factor < 0) cosine_factor = 0;
 
     
     Color color(r,g,b);
@@ -102,12 +101,9 @@ Color Scene::zBufferTrace(const Ray &ray)
     // No hit? Return background color.
     if (!obj) return Color(0.0, 0.0, 0.0);
     
-    Material *material = obj->material;            //the hit objects material
-    Point hit = ray.at(min_hit.t);                 //the hit point
-    Vector N = min_hit.N;                          //the normal at hit point
-    Vector V = -ray.D;                             //the view vector
-
-    return Color(0,0,0);
+    double z = 1-(min_hit.t-min_t) / (max_t-min_t);
+    z = (z * 0.9) + 0.1;
+    return Color(z,z,z);
 }
 
 Color Scene::normalBufferTrace(const Ray &ray)
@@ -142,13 +138,50 @@ void Scene::render(Image &img)
     int w = img.width();
     int h = img.height();
     
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
+    initializeMinMaxT();
+    
+    // Only execute this for if the render mode is for Z buffer
+    for (int y=0; y<h; y++)
+    {
+        for (int x=0; x<w; x++)
+        {
             Point pixel(x+0.5, h-1-y+0.5, 0);
             Ray ray(eye, (pixel-eye).normalized());
-            Color col = trace(ray);
+            findMinMaxT(ray);
+        }
+    }
+    
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            Point pixel(x+0.5, h-1-y+0.5, 0);
+            Ray ray(eye, (pixel-eye).normalized());
+            Color col = zBufferTrace(ray);
             col.clamp();
             img(x,y) = col;
+        }
+    }
+}
+
+void Scene::initializeMinMaxT()
+{
+    min_t = std::numeric_limits<double>::infinity();
+    max_t = 0;
+}
+
+void Scene::findMinMaxT(const Ray &ray)
+{
+    for (unsigned int i = 0; i < objects.size(); i++)
+    {
+        Hit hit(objects[i]->intersect(ray));
+        if (hit.t<min_t)
+        {
+            min_t = hit.t;
+        }
+        if (hit.t>max_t)
+        {
+            max_t = hit.t;
         }
     }
 }
