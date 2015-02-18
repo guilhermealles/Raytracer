@@ -49,7 +49,7 @@ Hit Triangle::intersect(const Ray &ray)
     Vector ba = v0 - v1;
     Vector bc = v2 - v1;
     
-    Vector normal = ba.cross(bc);
+    Vector normal = bc.cross(ba);
     normal.normalize();
     return Hit(t, normal);
     

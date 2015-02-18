@@ -34,7 +34,6 @@ Color Scene::trace(const Ray &ray)
             obj = objects[i];
         }
     }
-    
 
     // No hit? Return background color.
     if (!obj) return Color(0.0, 0.0, 0.0);
@@ -43,7 +42,6 @@ Color Scene::trace(const Ray &ray)
     Point hit = ray.at(min_hit.t);                 //the hit point
     Vector N = min_hit.N;                          //the normal at hit point
     Vector V = -ray.D;                             //the view vector
-
 
     /****************************************************
     * This is where you should insert the color
@@ -68,6 +66,7 @@ Color Scene::trace(const Ray &ray)
     
     double cosine_factor = N.normalized().dot(unit_light);
     double specular_factor;
+    
     if (cosine_factor < 0)
     {
         cosine_factor = 0;
@@ -83,7 +82,6 @@ Color Scene::trace(const Ray &ray)
     double g = (specular_factor * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
     double b = (specular_factor * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
 
-    
     Color color(r,g,b);
     return color;
 }
@@ -123,7 +121,6 @@ Color Scene::normalBufferTrace(const Ray &ray)
             obj = objects[i];
         }
     }
-    
     
     // No hit? Return background color.
     if (!obj) return Color(0.0, 0.0, 0.0);
