@@ -34,8 +34,9 @@ private:
     Light* parseLight(const YAML::Node& node);
 
 public:
+    
     Raytracer() { }
-
+    
     bool readScene(const std::string& inputFilename);
     void renderToFile(const std::string& outputFilename);
 };

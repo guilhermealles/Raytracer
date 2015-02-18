@@ -34,8 +34,8 @@ public:
     Color trace(const Ray &ray);
     Color zBufferTrace(const Ray &ray);
     Color normalBufferTrace(const Ray &ray);
-    void render(Image &img);
-    void initializeMinMaxT();
+    void render(Image &img, string mode);
+    void initializeMinMaxT(int h, int w);
     void findMinMaxT(const Ray &ray);
     void addObject(Object *o);
     void addLight(Light *l);

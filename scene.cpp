@@ -16,6 +16,7 @@
 
 #include "scene.h"
 #include "material.h"
+#include "raytracer.h"
 
 Color Scene::trace(const Ray &ray)
 {
@@ -135,14 +136,65 @@ Color Scene::normalBufferTrace(const Ray &ray)
     return color;
 }
 
-void Scene::render(Image &img)
+void Scene::render(Image &img, string mode)
 {
     int w = img.width();
     int h = img.height();
     
-    initializeMinMaxT();
+    if (mode == "phong")
+    {
+        for (int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; x++)
+            {
+                Point pixel(x+0.5, h-1-y+0.5, 0);
+                Ray ray(eye, (pixel-eye).normalized());
+                Color col = trace(ray);
+                col.clamp();
+                img(x,y) = col;
+            }
+        }
+    }
+    else if (mode == "zbuffer")
+    {
+        initializeMinMaxT(w,h);
+        for (int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; x++)
+            {
+                Point pixel(x+0.5, h-1-y+0.5, 0);
+                Ray ray(eye, (pixel-eye).normalized());
+                Color col = zBufferTrace(ray);
+                col.clamp();
+                img(x,y) = col;
+            }
+        }
+    }
+    else if (mode == "normal")
+    {
+        for (int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; x++)
+            {
+                Point pixel(x+0.5, h-1-y+0.5, 0);
+                Ray ray(eye, (pixel-eye).normalized());
+                Color col = normalBufferTrace(ray);
+                col.clamp();
+                img(x,y) = col;
+            }
+        }
+    }
+    else
+    {
+        cerr << "Error: invalid render mode!" << endl;
+    }
+}
+
+void Scene::initializeMinMaxT(int h, int w)
+{
+    min_t = std::numeric_limits<double>::infinity();
+    max_t = 0;
     
-    // Only execute this for if the render mode is for Z buffer
     for (int y=0; y<h; y++)
     {
         for (int x=0; x<w; x++)
@@ -152,24 +204,6 @@ void Scene::render(Image &img)
             findMinMaxT(ray);
         }
     }
-    
-    for (int y = 0; y < h; y++)
-    {
-        for (int x = 0; x < w; x++)
-        {
-            Point pixel(x+0.5, h-1-y+0.5, 0);
-            Ray ray(eye, (pixel-eye).normalized());
-            Color col = zBufferTrace(ray);
-            col.clamp();
-            img(x,y) = col;
-        }
-    }
-}
-
-void Scene::initializeMinMaxT()
-{
-    min_t = std::numeric_limits<double>::infinity();
-    max_t = 0;
 }
 
 void Scene::findMinMaxT(const Ray &ray)
