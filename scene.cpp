@@ -79,9 +79,9 @@ Color Scene::trace(const Ray &ray)
         specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
     }
     
-    double r = (specular_factor * material->color.r * lights.at(0)->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
-    double g = (specular_factor * material->color.g * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
-    double b = (specular_factor * material->color.b * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
+    double r = (specular_factor * lights.at(0)->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
+    double g = (specular_factor * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
+    double b = (specular_factor * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
 
     
     Color color(r,g,b);
@@ -187,7 +187,18 @@ void Scene::render(Image &img, string mode)
     }
     else
     {
-        cerr << "Error: invalid render mode!" << endl;
+        cerr << "Error: invalid render mode! Rendering as Phong..." << endl;
+        for (int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; x++)
+            {
+                Point pixel(x+0.5, h-1-y+0.5, 0);
+                Ray ray(eye, (pixel-eye).normalized());
+                Color col = trace(ray);
+                col.clamp();
+                img(x,y) = col;
+            }
+        }
     }
 }
 
