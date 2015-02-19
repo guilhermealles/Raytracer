@@ -150,7 +150,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 const YAML::Node& renderMode = doc["RenderMode"];
                 render_mode = parseString(renderMode);
             }
-            catch (YAML::TypedKeyNotFound<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >)
+            catch (exception)
             {
                 render_mode = "";
                 cerr << "Warning: RenderMode not found or is invalid!" << endl;
