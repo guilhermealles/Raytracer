@@ -80,7 +80,7 @@ Color Scene::trace(const Ray &ray)
     
     Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
     bool shadow = false;
-    for (unsigned int i = 0; i < objects.size(); ++i)
+    for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
     {
         Hit hit(objects[i]->intersect(pointToLight));
         if (hit.t >= 0)
@@ -89,22 +89,26 @@ Color Scene::trace(const Ray &ray)
         }
     }
 
+    double r,g,b;
+    Color color;
     if (shadow)
     {
-        double r = (material->ka * material->color.r);
-        double g = (material->ka * material->color.g);
-        double b = (material->ka * material->color.b);
+        r = (material->ka * material->color.r);
+        g = (material->ka * material->color.g);
+        b = (material->ka * material->color.b);
         
-        return Color(r,g,b);
+        color = Color(r,g,b);
     }
     else
     {
-        double r = (specular_factor * lights.at(0)->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
-        double g = (specular_factor * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
-        double b = (specular_factor * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
+        r = (specular_factor * lights.at(0)->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
+        g = (specular_factor * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
+        b = (specular_factor * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
         
-        return Color(r,g,b);
+        color = Color(r,g,b);
     }
+    
+    return color;
 }
 
 Color Scene::zBufferTrace(const Ray &ray)
