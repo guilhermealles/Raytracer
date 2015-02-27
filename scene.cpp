@@ -61,54 +61,50 @@ Color Scene::trace(const Ray &ray)
     *        pow(a,b)           a to the power of b
     ****************************************************/
     
-    Vector aux_light(lights.at(0)->position - hit);
-    Vector unit_light = aux_light.normalized();
+    Color ambient_component(0.0f,0.0f,0.0f), diffuse_component(0.0f,0.0f,0.0f), specular_component(0.0f,0.0f,0.0f);
     
-    double cosine_factor = N.normalized().dot(unit_light);
-    double specular_factor;
-    
-    if (cosine_factor < 0)
+    for (unsigned int i=0; i < lights.size(); i++)
     {
-        cosine_factor = 0;
-        specular_factor = 0;
-    }
-    else
-    {
-        Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
-        specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
-    }
-    
-    Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
-    bool shadow = false;
-    for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
-    {
-        Hit hit(objects[i]->intersect(pointToLight));
-        if (hit.t >= 0)
+        Vector aux_light(lights.at(i)->position - hit);
+        Vector unit_light = aux_light.normalized();
+        
+        double cosine_factor = N.normalized().dot(unit_light);
+        double specular_factor;
+        if (cosine_factor < 0)
         {
-            shadow = true;
+            cosine_factor = 0;
+            specular_factor = 0;
         }
-    }
+        else
+        {
+            Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
+            specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
+        }
+        
+        Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
+        bool shadow = false;
+        for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
+        {
+            Hit hit(objects[i]->intersect(pointToLight));
+            if (hit.t >= 0)
+            {
+                shadow = true;
+            }
+        }
+        
+        if (shadow) // if the object is in shadows, only the ambient component contributes to the lighting
+        {
+            ambient_component += material->ka * material->color * lights.at(i)->color;
+        }
+        else // if not, then all the components are considered
+        {
+            ambient_component += material->ka * material->color * lights.at(i)->color;
+            specular_component += specular_factor * lights.at(i)->color;
+            diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
+        }
 
-    double r,g,b;
-    Color color;
-    if (shadow)
-    {
-        r = (material->ka * material->color.r);
-        g = (material->ka * material->color.g);
-        b = (material->ka * material->color.b);
-        
-        color = Color(r,g,b);
     }
-    else
-    {
-        r = (specular_factor * lights.at(0)->color.r) + (material->ka * material->color.r) + (material->kd * cosine_factor * material->color.r);
-        g = (specular_factor * lights.at(0)->color.g) + (material->ka * material->color.g) +(material->kd * cosine_factor * material->color.g);
-        b = (specular_factor * lights.at(0)->color.b) + (material->ka * material->color.b) +(material->kd * cosine_factor * material->color.b);
-        
-        color = Color(r,g,b);
-    }
-    
-    return color;
+    return Color(ambient_component + specular_component + diffuse_component);
 }
 
 Color Scene::zBufferTrace(const Ray &ray)
