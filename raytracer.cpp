@@ -143,7 +143,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             parser.GetNextDocument(doc);
             
             // Read scene configuration options
-            scene->setEye(parseTriple(doc["Eye"]));
+            scene->setparseTriple(doc["Eye"]));
             
             try
             {
@@ -154,6 +154,25 @@ bool Raytracer::readScene(const std::string& inputFilename)
             {
                 render_mode = "";
                 cerr << "Warning: RenderMode not found or is invalid!" << endl;
+            }
+
+            try
+            {
+                const YAML::Node& antiAliasingNode = doc["AntiAliasing"];
+                string antiAliasingEnabled = parseString(antiAliasingNode);
+                if (antiAliasingEnabled == "true")
+                {
+                    scene->setAntiAliasing(true);   
+                }
+                else
+                {
+                    scene->setAntiAliasing(false);
+                }
+            }
+            catch (exception)
+            {
+                cerr << "Warning: AntiAliasing configs not found! Disabling AA..." << endl;
+                scene->setAntiAliasing(false);
             }
 
             // Read and parse the scene objects
