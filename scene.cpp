@@ -36,7 +36,8 @@ Color Scene::trace(const Ray &ray)
     }
 
     // No hit? Return background color.
-    if (!obj) return Color(0.0, 0.0, 0.0);
+    if (!obj)
+        return Color(0.0, 0.0, 0.0);
 
     Material *material = obj->material;            //the hit objects material
     Point hit = ray.at(min_hit.t);                 //the hit point
@@ -61,15 +62,23 @@ Color Scene::trace(const Ray &ray)
     *        pow(a,b)           a to the power of b
     ****************************************************/
     
-    Color ambient_component(0.0f,0.0f,0.0f), diffuse_component(0.0f,0.0f,0.0f), specular_component(0.0f,0.0f,0.0f);
+    Color ambient_component(0.0f,0.0f,0.0f);
+    Color diffuse_component(0.0f,0.0f,0.0f);
+    Color specular_component(0.0f,0.0f,0.0f);
+    Color reflection_component(0.0f,0.0f,0.0f);
+    
+    //Vector reflection_vector(V - 2*(V.dot(N)) * N);
+    //reflection_component += trace(Ray(hit, reflection_vector));
+    
     
     for (unsigned int i=0; i < lights.size(); i++)
     {
-        Vector aux_light(lights.at(i)->position - hit);
-        Vector unit_light = aux_light.normalized();
+        Vector hit_to_light(lights.at(i)->position - hit);
+        Vector unit_light = hit_to_light.normalized();
         
         double cosine_factor = N.normalized().dot(unit_light);
         double specular_factor;
+        
         if (cosine_factor < 0)
         {
             cosine_factor = 0;
@@ -83,6 +92,7 @@ Color Scene::trace(const Ray &ray)
         
         Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
         bool shadow = false;
+        
         for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
         {
             Hit hit(objects[i]->intersect(pointToLight));
@@ -105,6 +115,7 @@ Color Scene::trace(const Ray &ray)
 
     }
     return Color(ambient_component + specular_component + diffuse_component);
+    //return Color(1.0f, 0.0f, 0.0f);
 }
 
 Color Scene::zBufferTrace(const Ray &ray)
@@ -166,11 +177,20 @@ void Scene::render(Image &img, string mode)
         {
             for (int x = 0; x < w; x++)
             {
-                Point pixel(x+0.5, h-1-y+0.5, 0);
-                Ray ray(eye, (pixel-eye).normalized());
-                Color col = trace(ray);
-                col.clamp();
-                img(x,y) = col;
+                Color pixelColor(0.0f,0.0f,0.0f);
+                for(double subY = 0; subY < 4; subY++)
+                {
+                    for(double subX = 0; subX < 4; subX++)
+                    {
+                        Point pixel(x+(subX/4), h-1-y+(subY/4), 0);
+                        Ray ray(eye, (pixel-eye).normalized());
+                        Color subColor = trace(ray);
+                        pixelColor = pixelColor + subColor;
+                    }
+                }
+                pixelColor = pixelColor/(double)16; //grid of 4x4
+                pixelColor.clamp();
+                img(x,y) = pixelColor;
             }
         }
     }
@@ -210,11 +230,20 @@ void Scene::render(Image &img, string mode)
         {
             for (int x = 0; x < w; x++)
             {
-                Point pixel(x+0.5, h-1-y+0.5, 0);
-                Ray ray(eye, (pixel-eye).normalized());
-                Color col = trace(ray);
-                col.clamp();
-                img(x,y) = col;
+                Color pixelColor(0.0f,0.0f,0.0f);
+                for(double subY = 0; subY < 4; subY++)
+                {
+                    for(double subX = 0; subX < 4; subX++)
+                    {
+                        Point pixel(x+(subX/4), h-1-y+(subY/4), 0);
+                        Ray ray(eye, (pixel-eye).normalized());
+                        Color subColor = trace(ray);
+                        pixelColor = pixelColor + subColor;
+                    }
+                }
+                pixelColor = pixelColor/(double)16; //grid of 4x4
+                pixelColor.clamp();
+                img(x,y) = pixelColor;
             }
         }
     }
