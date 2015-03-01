@@ -29,6 +29,7 @@ private:
     std::vector<Object*> objects;
     std::vector<Light*> lights;
     Triple eye;
+    bool antiAliasingEnabled = false;
     double min_t;
     double max_t;
 public:
@@ -44,6 +45,7 @@ public:
     double max (double x, double y);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
+    void setAntiAliasing(bool state);
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

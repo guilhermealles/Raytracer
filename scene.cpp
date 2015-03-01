@@ -173,24 +173,41 @@ void Scene::render(Image &img, string mode)
     cout << mode << endl;
     if (mode == "phong")
     {
-        for (int y = 0; y < h; y++)
+        if (antiAliasingEnabled)
         {
-            for (int x = 0; x < w; x++)
+            for (int y = 0; y < h; y++)
             {
-                Color pixelColor(0.0f,0.0f,0.0f);
-                for(double subY = 0; subY < 4; subY++)
+                for (int x = 0; x < w; x++)
                 {
-                    for(double subX = 0; subX < 4; subX++)
+                    Color pixelColor(0.0f,0.0f,0.0f);
+                    for(int subY = 0; subY < 4; subY++)
                     {
-                        Point pixel(x+(subX/4), h-1-y+(subY/4), 0);
-                        Ray ray(eye, (pixel-eye).normalized());
-                        Color subColor = trace(ray);
-                        pixelColor = pixelColor + subColor;
+                        for(int subX = 0; subX < 4; subX++)
+                        {
+                            Point pixel(x+((double)subX/4), h-1-y+((double)subY/4), 0);
+                            Ray ray(eye, (pixel-eye).normalized());
+                            Color subColor = trace(ray);
+                            pixelColor = pixelColor + subColor;
+                        }
                     }
+                    pixelColor = pixelColor/(double)16; //grid of 4x4
+                    pixelColor.clamp();
+                    img(x,y) = pixelColor;
                 }
-                pixelColor = pixelColor/(double)16; //grid of 4x4
-                pixelColor.clamp();
-                img(x,y) = pixelColor;
+            }
+        }
+        else
+        {
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    Point pixel(x+0.5, h-1-y+0.5, 0);
+                    Ray ray(eye, (pixel-eye).normalized());
+                    Color col = trace(ray);
+                    col.clamp();
+                    img(x,y) = col;
+                }
             }
         }
     }
@@ -226,24 +243,41 @@ void Scene::render(Image &img, string mode)
     else
     {
         cerr << "Rendering as Phong..." << endl;
-        for (int y = 0; y < h; y++)
+        if (antiAliasingEnabled)
         {
-            for (int x = 0; x < w; x++)
+            for (int y = 0; y < h; y++)
             {
-                Color pixelColor(0.0f,0.0f,0.0f);
-                for(double subY = 0; subY < 4; subY++)
+                for (int x = 0; x < w; x++)
                 {
-                    for(double subX = 0; subX < 4; subX++)
+                    Color pixelColor(0.0f,0.0f,0.0f);
+                    for(int subY = 0; subY < 4; subY++)
                     {
-                        Point pixel(x+(subX/4), h-1-y+(subY/4), 0);
-                        Ray ray(eye, (pixel-eye).normalized());
-                        Color subColor = trace(ray);
-                        pixelColor = pixelColor + subColor;
+                        for(int subX = 0; subX < 4; subX++)
+                        {
+                            Point pixel(x+((double)subX/4), h-1-y+((double)subY/4), 0);
+                            Ray ray(eye, (pixel-eye).normalized());
+                            Color subColor = trace(ray);
+                            pixelColor = pixelColor + subColor;
+                        }
                     }
+                    pixelColor = pixelColor/(double)16; //grid of 4x4
+                    pixelColor.clamp();
+                    img(x,y) = pixelColor;
                 }
-                pixelColor = pixelColor/(double)16; //grid of 4x4
-                pixelColor.clamp();
-                img(x,y) = pixelColor;
+            }
+        }
+        else
+        {
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    Point pixel(x+0.5, h-1-y+0.5, 0);
+                    Ray ray(eye, (pixel-eye).normalized());
+                    Color col = trace(ray);
+                    col.clamp();
+                    img(x,y) = col;
+                }
             }
         }
     }
@@ -302,4 +336,9 @@ void Scene::addLight(Light *l)
 void Scene::setEye(Triple e)
 {
     eye = e;
+}
+
+void Scene::setAntiAliasing(bool state)
+{
+    antiAliasingEnabled = state;
 }
