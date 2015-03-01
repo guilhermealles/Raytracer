@@ -143,7 +143,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             parser.GetNextDocument(doc);
             
             // Read scene configuration options
-            scene->setparseTriple(doc["Eye"]));
+            scene->setEye(parseTriple(doc["Eye"]));
             
             try
             {
