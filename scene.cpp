@@ -74,28 +74,15 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
     
     for (unsigned int i=0; i < lights.size(); i++)
     {
-        Vector hit_to_light(lights.at(i)->position - hit);
-        Vector unit_light = hit_to_light.normalized();
+        Vector unitLight((lights.at(i)->position - hit).normalized());
+        Vector reflection_vector((2*(unitLight.dot(N)))*N-unitLight);
         
-        double cosine_factor = N.normalized().dot(unit_light);
-        double specular_factor;
-        
-        
-        if (cosine_factor < 0)
-        {
-            cosine_factor = 0;
-            specular_factor = 0;
-        }
-        else
-        {
-            Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
-            specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
-            reflection_component = trace(Ray(hit, reflection_vector), --recursionLevel) * material->ks;
-        }
+        // The ambient component is added regardless of shadows
+        ambient_component += material->ka * material->color * lights.at(i)->color;
         
         if (shadowsEnabled)
         {
-            Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
+            Ray pointToLight(hit, unitLight); // This is a vector from the hit point to the light source
             bool shadow = false;
             
             for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
@@ -107,23 +94,30 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
                 }
             }
             
-            if (shadow) // if the object is in shadows, only the ambient component contributes to the lighting
+            if (shadow == false) // if the object is not on shadow, then all the components are considered
             {
-                ambient_component += material->ka * material->color * lights.at(i)->color;
-            }
-            else // if not, then all the components are considered
-            {
-                ambient_component += material->ka * material->color * lights.at(i)->color;
+                double cosine_factor = N.normalized().dot(unitLight);
+                if (cosine_factor < 0)
+                    cosine_factor = 0;
+                double specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
+                
                 specular_component += specular_factor * lights.at(i)->color;
                 diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
             }
         }
         else
         {
-            ambient_component += material->ka * material->color * lights.at(i)->color;
+            double cosine_factor = N.normalized().dot(unitLight);
+            if (cosine_factor < 0)
+                cosine_factor = 0;
+            double specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
+            
             specular_component += specular_factor * lights.at(i)->color;
             diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
         }
+        
+        // Add reflection component
+        reflection_component = trace(Ray(hit, reflection_vector), --recursionLevel) * material->ks;
     }
     return Color(ambient_component + specular_component + diffuse_component + reflection_component);
 }
