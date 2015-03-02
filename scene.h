@@ -30,9 +30,10 @@ private:
     std::vector<Light*> lights;
     Triple eye;
     bool antiAliasingEnabled = false;
+    bool shadowsEnabled = false;
     double min_t;
     double max_t;
-    int recursion_max;
+    int maxRecursionDepth;
 public:
     Color trace(const Ray &ray, int recursion = 0);
     Color zBufferTrace(const Ray &ray);
@@ -47,6 +48,8 @@ public:
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
     void setAntiAliasing(bool state);
+    void setShadows(bool state);
+    void setMaxRecursionDepth(int recursionDepth);
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

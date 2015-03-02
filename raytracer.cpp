@@ -46,6 +46,13 @@ Triple parseTriple(const YAML::Node& node)
     return t;
 }
 
+int parseInt(const YAML::Node& node)
+{
+    int i;
+    node>>i;
+    return i;
+}
+
 string parseString(const YAML::Node& node)
 {
     std::string s;
@@ -174,6 +181,28 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 cerr << "Warning: AntiAliasing configs not found! Disabling AA..." << endl;
                 scene->setAntiAliasing(false);
             }
+            
+            try {
+                const YAML::Node& shadowsNode = doc["Shadows"];
+                string shadowsEnabled = parseString(shadowsNode);
+                if (shadowsEnabled == "true") {
+                    scene->setShadows(true);
+                } else {
+                    scene->setShadows(false);
+                }
+            } catch (exception) {
+                cerr << "Warning: Shadows configs not found! Default: disabled" << endl;
+                scene->setShadows(false);
+            }
+            
+            try {
+                const YAML::Node& maxRecDepthNode = doc["MaxRecursionDepth"];
+                int maxRecursionDepth = parseInt(maxRecDepthNode);
+                scene->setMaxRecursionDepth(maxRecursionDepth);
+            } catch (exception) {
+                cerr << "Warning: Reflection recursion depth invalid! Default: 2" << endl;
+                scene->setMaxRecursionDepth(2);
+            }
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
@@ -224,7 +253,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
 void Raytracer::renderToFile(const std::string& outputFilename)
 {
     Image img(400,400);
-    cout << "Tracing..." << endl;
+    cout << "Tracing..." << endl;;
     scene->render(img, render_mode);
     cout << "Writing image to " << outputFilename << "..." << endl;
     img.write_png(outputFilename.c_str());

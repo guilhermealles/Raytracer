@@ -21,9 +21,10 @@
 #define recursion_max 1
 
 
-Color Scene::trace(const Ray &ray, int recursion)
+Color Scene::trace(const Ray &ray, int recursionLevel)
 {
-    //if (recursion > 0) return Color();
+    if (recursionLevel < 0)
+        return Color(0.0f,0.0f,0.0f);
     
     // Find hit object and distance
     Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
@@ -71,10 +72,6 @@ Color Scene::trace(const Ray &ray, int recursion)
     Color specular_component(0.0f,0.0f,0.0f);
     Color reflection_component(0.0f,0.0f,0.0f);
     
-    //Vector reflection_vector(V - 2*(V.dot(N)) * N);
-    //reflection_component += trace(Ray(hit, reflection_vector));
-    
-    
     for (unsigned int i=0; i < lights.size(); i++)
     {
         Vector hit_to_light(lights.at(i)->position - hit);
@@ -93,37 +90,42 @@ Color Scene::trace(const Ray &ray, int recursion)
         {
             Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
             specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
-            reflection_component = trace(Ray(hit, reflection_vector), recursion + 1) * material->ks;
+            reflection_component = trace(Ray(hit, reflection_vector), --recursionLevel) * material->ks;
         }
         
-        Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
-        bool shadow = false;
-        
-        for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
+        if (shadowsEnabled)
         {
-            Hit hit(objects[i]->intersect(pointToLight));
-            if (hit.t >= 0)
+            Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
+            bool shadow = false;
+            
+            for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
             {
-                shadow = true;
+                Hit hit(objects[i]->intersect(pointToLight));
+                if (hit.t >= 0)
+                {
+                    shadow = true;
+                }
+            }
+            
+            if (shadow) // if the object is in shadows, only the ambient component contributes to the lighting
+            {
+                ambient_component += material->ka * material->color * lights.at(i)->color;
+            }
+            else // if not, then all the components are considered
+            {
+                ambient_component += material->ka * material->color * lights.at(i)->color;
+                specular_component += specular_factor * lights.at(i)->color;
+                diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
             }
         }
-        
-        if (shadow) // if the object is in shadows, only the ambient component contributes to the lighting
-        {
-            ambient_component += material->ka * material->color * lights.at(i)->color;
-        }
-        else // if not, then all the components are considered
+        else
         {
             ambient_component += material->ka * material->color * lights.at(i)->color;
             specular_component += specular_factor * lights.at(i)->color;
             diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
         }
-
     }
-    
-    
     return Color(ambient_component + specular_component + diffuse_component + reflection_component);
-    //return Color(1.0f, 0.0f, 0.0f);
 }
 
 Color Scene::zBufferTrace(const Ray &ray)
@@ -178,7 +180,6 @@ void Scene::render(Image &img, string mode)
 {
     int w = img.width();
     int h = img.height();
-    cout << mode << endl;
     if (mode == "phong")
     {
         if (antiAliasingEnabled)
@@ -194,7 +195,7 @@ void Scene::render(Image &img, string mode)
                         {
                             Point pixel(x+((double)subX/4), h-1-y+((double)subY/4), 0);
                             Ray ray(eye, (pixel-eye).normalized());
-                            Color subColor = trace(ray);
+                            Color subColor = trace(ray, maxRecursionDepth);
                             pixelColor = pixelColor + subColor;
                         }
                     }
@@ -212,7 +213,7 @@ void Scene::render(Image &img, string mode)
                 {
                     Point pixel(x+0.5, h-1-y+0.5, 0);
                     Ray ray(eye, (pixel-eye).normalized());
-                    Color col = trace(ray);
+                    Color col = trace(ray, maxRecursionDepth);
                     col.clamp();
                     img(x,y) = col;
                 }
@@ -264,7 +265,7 @@ void Scene::render(Image &img, string mode)
                         {
                             Point pixel(x+((double)subX/4), h-1-y+((double)subY/4), 0);
                             Ray ray(eye, (pixel-eye).normalized());
-                            Color subColor = trace(ray);
+                            Color subColor = trace(ray, maxRecursionDepth);
                             pixelColor = pixelColor + subColor;
                         }
                     }
@@ -282,7 +283,7 @@ void Scene::render(Image &img, string mode)
                 {
                     Point pixel(x+0.5, h-1-y+0.5, 0);
                     Ray ray(eye, (pixel-eye).normalized());
-                    Color col = trace(ray);
+                    Color col = trace(ray, maxRecursionDepth);
                     col.clamp();
                     img(x,y) = col;
                 }
@@ -349,4 +350,14 @@ void Scene::setEye(Triple e)
 void Scene::setAntiAliasing(bool state)
 {
     antiAliasingEnabled = state;
+}
+
+void Scene::setShadows(bool state)
+{
+    shadowsEnabled = state;
+}
+
+void Scene::setMaxRecursionDepth(int recursionDepth)
+{
+    maxRecursionDepth = recursionDepth;
 }
