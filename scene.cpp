@@ -18,9 +18,13 @@
 #include "material.h"
 #include "stdio.h"
 #include "raytracer.h"
+#define recursion_max 1
 
-Color Scene::trace(const Ray &ray)
+
+Color Scene::trace(const Ray &ray, int recursion)
 {
+    //if (recursion > 0) return Color();
+    
     // Find hit object and distance
     Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
     Object *obj = NULL;
@@ -79,6 +83,7 @@ Color Scene::trace(const Ray &ray)
         double cosine_factor = N.normalized().dot(unit_light);
         double specular_factor;
         
+        
         if (cosine_factor < 0)
         {
             cosine_factor = 0;
@@ -88,6 +93,7 @@ Color Scene::trace(const Ray &ray)
         {
             Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
             specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
+            reflection_component = trace(Ray(hit, reflection_vector), recursion + 1) * material->ks;
         }
         
         Ray pointToLight(hit, unit_light); // This is a vector from the hit point to the light source
@@ -114,7 +120,9 @@ Color Scene::trace(const Ray &ray)
         }
 
     }
-    return Color(ambient_component + specular_component + diffuse_component);
+    
+    
+    return Color(ambient_component + specular_component + diffuse_component + reflection_component);
     //return Color(1.0f, 0.0f, 0.0f);
 }
 

@@ -32,8 +32,9 @@ private:
     bool antiAliasingEnabled = false;
     double min_t;
     double max_t;
+    int recursion_max;
 public:
-    Color trace(const Ray &ray);
+    Color trace(const Ray &ray, int recursion = 0);
     Color zBufferTrace(const Ray &ray);
     Color normalBufferTrace(const Ray &ray);
     void render(Image &img, string mode);
