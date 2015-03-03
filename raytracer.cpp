@@ -199,7 +199,8 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 Triple eye(parseTriple(doc["CameraEye"]));
                 Triple lookPoint(parseTriple(doc["CameraLookPoint"]));
                 Triple upVector(parseTriple(doc["CameraUpVector"]));
-                scene->setCamera(*new Camera(eye, lookPoint, upVector));
+                scene->setCamera(*new Camera(eye, lookPoint, upVector.normalized()));
+                scene->setCameraFlag(true);
             } catch (exception) {
                 cerr << "Warning: Camera parameters not set! Will use eye parameter." << endl;
                 scene->setCameraFlag(false);

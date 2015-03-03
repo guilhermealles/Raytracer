@@ -19,7 +19,7 @@ CameraLookPoint: [200,200,100]
 CameraUpVector: [0,1,0]
 
 RenderMode: phong
-AntiAliasing: true
+AntiAliasing: false
 Shadows: true
 MaxRecursionDepth: 2
 

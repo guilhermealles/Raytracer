@@ -239,9 +239,18 @@ void Scene::render(Image &img, string mode)
                 }
                 else
                 {
-                    Point pixel(x+0.5, h-1-y+0.5, 0);
-                    Ray ray(eye, (pixel-eye).normalized());
-                    Color col = trace(ray, maxRecursionDepth);
+                    Color col(0,0,0);
+                    if (cameraIsSet)
+                    {
+                        Ray ray(camera.getRay(x+0.5, h-1-y+0.5));
+                        col = trace(ray, maxRecursionDepth);
+                    }
+                    else
+                    {
+                        Point pixel(x+0.5, h-1-y+0.5, 0);
+                        Ray ray(eye, (pixel-eye).normalized());
+                        col = trace(ray, maxRecursionDepth);
+                    }
                     col.clamp();
                     img(x,y) = col;
                 }
