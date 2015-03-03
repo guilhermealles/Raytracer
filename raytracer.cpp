@@ -167,8 +167,8 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 const YAML::Node& renderMode = doc["RenderMode"];
                 render_mode = parseString(renderMode);
             } catch (exception) {
-                render_mode = "";
-                cerr << "Warning: RenderMode not found or is invalid!" << endl;
+                render_mode = "phong";
+                cerr << "Warning: RenderMode not found or is invalid! Default: phong" << endl;
             }
 
             try {
