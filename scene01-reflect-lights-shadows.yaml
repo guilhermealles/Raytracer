@@ -13,13 +13,13 @@
 #  it should be clear that the #-character can be used to insert comments.
 
 Eye: [200,200,1000]
-RenderMode: hsuioag
 
 CameraEye: [200,200,1000]
 CameraLookPoint: [200,200,100]
 CameraUpVector: [0,1,0]
 
-AntiAliasing: false
+RenderMode: phong
+AntiAliasing: true
 Shadows: true
 MaxRecursionDepth: 2
 

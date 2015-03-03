@@ -1,0 +1,504 @@
+---
+#  This is an example scene description for the raytracer framework created 
+#  for the Computer Science course "Introduction to Computer Graphics"
+#  taught at the University of Groningen by Tobias Isenberg.
+#
+#  The scene description format we use is based on YAML, which is a human friendly 
+#  data serialization standard. This gives us a flexible format which should be
+#  fairly easy to make both backward and forward compatible (i.e., by ignoring
+#  unknown directives). In addition parsers are available for many languages.
+#  See http://www.yaml.org/ for more information on YAML.
+#
+#  The example scene description should largely speak for itself. By now
+#  it should be clear that the #-character can be used to insert comments.
+
+Eye: [200,200,1000]  
+
+AntiAliasing: true
+Shadows: true
+MaxRecursionDepth: 2
+
+Lights:
+- position: [-200,600,1500]
+  color: [0.4,0.4,0.8]
+- position: [600,600,1500]
+  color: [0.8,0.8,0.4]
+
+Objects:
+- type: sphere
+  position: [200,165,100]
+  radius: 100
+  material: # blue
+    color: [0.93,0.81,0.81]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [165,200,195]
+  radius: 13
+  material: # blue
+    color: [1.0,1.0,1.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [235,200,195]
+  radius: 13
+  material: # blue
+    color: [1.0,1.0,1.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [165,200,205]
+  radius: 7
+  material: # blue
+    color: [0.0,0.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [235,200,205]
+  radius: 7
+  material: # blue
+    color: [0.0,0.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [200,165,200]
+  radius: 10
+  material: # blue
+    color: [0.93,0.81,0.81]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [200,120,200]
+  radius: 15
+  material: # blue
+    color: [1.0,0.1,0.6]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [125,240,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [120,230,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [115,220,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [110,210,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [105,200,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [100,190,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [275,235,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [280,227,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [285,219,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [290,210,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [295,200,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [270,219,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [265,225,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [260,231,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [255,236,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [250,241,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [240,253,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [235,255,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [230,257,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [225,258,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [220,260,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [215,261,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [210,263,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [205,264,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [200,265,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [245,250,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [260,248,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [268,245,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [270,242,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [125,240,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [200,265,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [195,265,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [190,265,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [185,264,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [180,263,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [175,260,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [165,257,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [155,253,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [145,248,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [135,244,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [130,242,100]
+  radius: 25
+  material: # blue
+    color: [0.93,0.5,0.93]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [265,242,200]
+  radius: 20
+  material: # blue
+    color: [0.0,1.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [255,242,200]
+  radius: 20
+  material: # blue
+    color: [0.0,1.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [260,237,200]
+  radius: 20
+  material: # blue
+    color: [0.0,1.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [260,247,200]
+  radius: 20
+  material: # blue
+    color: [0.0,1.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
+- type: sphere
+  position: [260,242,210]
+  radius: 15
+  material: # blue
+    color: [1.0,0.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
