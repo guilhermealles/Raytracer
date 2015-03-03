@@ -37,3 +37,13 @@ Triple Camera::getUpVector()
 {
     return up;
 }
+
+double Camera::getFovY()
+{
+    return fovY;
+}
+
+double Camera::getFovX()
+{
+    return fovX;
+}
