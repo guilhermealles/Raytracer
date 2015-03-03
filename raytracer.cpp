@@ -126,13 +126,14 @@ Light* Raytracer::parseLight(const YAML::Node& node)
 
 Camera* Raytracer::parseCamera(const YAML::Node& node)
 {
+    return new Camera (Point(0,0,0), Vector(0,0,1), Vector(0,1,0));
     Point eye;
     node["eye"] >> eye;
     Vector viewDir;
     node["viewDirection"] >> viewDir;
     Vector up;
     node["up"] >> up;
-    return new Camera(eye, viewDir, up);
+    //return new Camera(eye, viewDir, up);
 }
 
 /*

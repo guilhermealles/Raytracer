@@ -23,6 +23,22 @@ void Camera::setUpVector(Triple upV)
     up = upV;
 }
 
+void Camera::setViewSize(int w, int h)
+{
+    viewWidth = w;
+    viewHeight = h;
+}
+
+double Camera::getViewWidth()
+{
+    return viewWidth;
+}
+
+double Camera::getViewHeight()
+{
+    return viewHeight;
+}
+
 Triple Camera::getEye()
 {
     return eye;
@@ -38,12 +54,28 @@ Triple Camera::getUpVector()
     return up;
 }
 
-double Camera::getFovY()
+double Camera::pixelSize()
 {
-    return fovY;
+    return up.length();
 }
 
-double Camera::getFovX()
+Ray Camera:: getRay(int x, int y)
 {
-    return fovX;
+    Vector E = eye;
+    Vector G = viewDirection - eye;
+    Vector U = up;
+    double w = viewWidth * pixelSize();
+    double h = viewHeight * pixelSize();
+    
+    Vector A = G.cross(U);
+    Vector B = A.cross(G);
+    Vector M = viewDirection;
+    Vector H = A * 0.5 * w / A.length();
+    Vector V = B * 0.5 * h / B.length();
+    double sx = x / viewWidth;
+    double sy = y / viewHeight;
+    
+    Point P = M + (2 * sx - 1) * H + (2 * sy - 1) * V;
+    
+    return Ray(E, (P - E).normalized());
 }

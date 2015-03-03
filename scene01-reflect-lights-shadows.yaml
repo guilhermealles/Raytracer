@@ -13,13 +13,14 @@
 #  it should be clear that the #-character can be used to insert comments.
 
 Eye: [200,200,1000]
+RenderMode:
 
 Camera:
 - eye: [200,200,1000]
   viewDirection: [200,200,1000]
   up: [0,1,0]
 
-AntiAliasing: true
+AntiAliasing: false
 Shadows: true
 MaxRecursionDepth: 2
 
