@@ -33,6 +33,7 @@ private:
     Camera camera;
     bool antiAliasingEnabled = false;
     bool shadowsEnabled = false;
+    bool cameraIsSet = false;
     double min_t;
     double max_t;
     int maxRecursionDepth;
@@ -47,6 +48,7 @@ public:
     void addLight(Light *l);
     void setEye(Triple e);
     void setCamera(Camera c);
+    void setCameraFlag(bool state);
     double max (double x, double y);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }

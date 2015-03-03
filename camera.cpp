@@ -13,9 +13,9 @@ void Camera::setEye(Triple e)
     eye = e;
 }
 
-void Camera::setViewDirection(Triple vD)
+void Camera::setLookPoint(Point lP)
 {
-    viewDirection = vD;
+    lookPoint = lP;
 }
 
 void Camera::setUpVector(Triple upV)
@@ -44,9 +44,9 @@ Triple Camera::getEye()
     return eye;
 }
 
-Triple Camera::getViewDirection()
+Triple Camera::getLookPoint()
 {
-    return viewDirection;
+    return lookPoint;
 }
 
 Triple Camera::getUpVector()
@@ -59,17 +59,17 @@ double Camera::pixelSize()
     return up.length();
 }
 
-Ray Camera:: getRay(int x, int y)
+Ray Camera:: getRay(double x, double y)
 {
     Vector E = eye;
-    Vector G = viewDirection - eye;
+    Vector G = lookPoint - eye;
     Vector U = up;
     double w = viewWidth * pixelSize();
     double h = viewHeight * pixelSize();
     
     Vector A = G.cross(U);
     Vector B = A.cross(G);
-    Vector M = viewDirection;
+    Vector M = lookPoint;
     Vector H = A * 0.5 * w / A.length();
     Vector V = B * 0.5 * h / B.length();
     double sx = x / viewWidth;

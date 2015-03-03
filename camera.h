@@ -16,23 +16,23 @@ class Camera
 {
 private:
     Point eye;
-    Vector viewDirection;
+    Point lookPoint;
     Vector up;
     double viewWidth=400, viewHeight=400;
 public:
     Camera() { };
-    Camera(Point eye, Vector viewDirection, Vector up) : eye(eye), viewDirection(viewDirection), up(up) { };
+    Camera(Point eye, Point lookPoint, Vector up) : eye(eye), lookPoint(lookPoint), up(up) { };
     void setEye(Triple e);
-    void setViewDirection(Triple vD);
+    void setLookPoint(Point lP);
     void setUpVector(Triple upV);
     void setViewSize(int w, int h);
     double getViewWidth();
     double getViewHeight();
     Triple getEye();
-    Triple getViewDirection();
+    Triple getLookPoint();
     Triple getUpVector();
     double pixelSize();
-    Ray getRay(int x, int y);
+    Ray getRay(double x, double y);
 };
 
 #endif

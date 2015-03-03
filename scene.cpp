@@ -174,47 +174,7 @@ void Scene::render(Image &img, string mode)
 {
     int w = img.width();
     int h = img.height();
-    if (mode == "phong")
-    {
-        if (antiAliasingEnabled)
-        {
-            for (int y = 0; y < h; y++)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    Color pixelColor(0.0f,0.0f,0.0f);
-                    for(int subY = 0; subY < 4; subY++)
-                    {
-                        for(int subX = 0; subX < 4; subX++)
-                        {
-                            Point pixel(x+((double)subX/4), h-1-y+((double)subY/4), 0);
-                            Ray ray(eye, (pixel-eye).normalized());
-                            Color subColor = trace(ray, maxRecursionDepth);
-                            pixelColor = pixelColor + subColor;
-                        }
-                    }
-                    pixelColor = pixelColor/(double)16; //grid of 4x4
-                    pixelColor.clamp();
-                    img(x,y) = pixelColor;
-                }
-            }
-        }
-        else
-        {
-            for (int y = 0; y < h; y++)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    Point pixel(x+0.5, h-1-y+0.5, 0);
-                    Ray ray(eye, (pixel-eye).normalized());
-                    Color col = trace(ray, maxRecursionDepth);
-                    col.clamp();
-                    img(x,y) = col;
-                }
-            }
-        }
-    }
-    else if (mode == "zbuffer")
+    if (mode == "zbuffer")
     {
         initializeMinMaxT(w,h);
         for (int y = 0; y < h; y++)
@@ -243,17 +203,48 @@ void Scene::render(Image &img, string mode)
             }
         }
     }
-    else
+    else // Phong shading
     {
-        cout << "Testing camera view..." << endl;
-        for(int y = 0; y < h; y++)
+        if (mode != "phong")
+            cerr << "Warning: render mode is invalid! Default: phong." << endl;
+        for (int y = 0; y < h; y++)
         {
             for (int x = 0; x < w; x++)
             {
-                Ray ray(camera.getRay(x+0.5, h-1-y+0.5));
-                Color col = trace(ray);
-                col.clamp();
-                img(x,y) = col;
+                if (antiAliasingEnabled)
+                {
+                    Color pixelColor(0.0f,0.0f,0.0f);
+                    for(int subY = 0; subY < 4; subY++)
+                    {
+                        for(int subX = 0; subX < 4; subX++)
+                        {
+                            if (cameraIsSet)
+                            {
+                                Ray ray(camera.getRay(x+((double)subX/4), h-1-y+((double)subY/4)));
+                                Color subColor = trace(ray, maxRecursionDepth);
+                                pixelColor += subColor;
+                            }
+                            else
+                            {
+                                Point pixel(x+((double)subX/4), h-1-y+((double)subY/4));
+                                Ray ray(eye, (pixel-eye).normalized());
+                                Color subColor = trace(ray, maxRecursionDepth);
+                                pixelColor += subColor;
+                            }
+                        }
+                    }
+                    pixelColor = pixelColor/(double)16; //grid of 4x4
+                    pixelColor.clamp();
+                    img(x,y) = pixelColor;
+                }
+                else
+                {
+                    Point pixel(x+0.5, h-1-y+0.5, 0);
+                    Ray ray(eye, (pixel-eye).normalized());
+                    Color col = trace(ray, maxRecursionDepth);
+                    col.clamp();
+                    img(x,y) = col;
+                }
             }
         }
     }
@@ -317,8 +308,13 @@ void Scene::setEye(Triple e)
 void Scene::setCamera(Camera c)
 {
     camera.setEye(c.getEye());
-    camera.setViewDirection(c.getViewDirection());
+    camera.setLookPoint(c.getLookPoint());
     camera.setUpVector(c.getUpVector());
+}
+
+void Scene::setCameraFlag (bool state)
+{
+    cameraIsSet = state;
 }
 
 void Scene::setAntiAliasing(bool state)

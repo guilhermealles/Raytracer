@@ -124,18 +124,6 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     return new Light(position,color);
 }
 
-Camera* Raytracer::parseCamera(const YAML::Node& node)
-{
-    return new Camera (Point(200,200,1000), Vector(200,200,100), Vector(0,1,0));
-    Point eye;
-    node["eye"] >> eye;
-    Vector viewDir;
-    node["viewDirection"] >> viewDir;
-    Vector up;
-    node["up"] >> up;
-    //return new Camera(eye, viewDir, up);
-}
-
 /*
 * Read a scene from file
 */
@@ -168,9 +156,8 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 const YAML::Node& renderMode = doc["RenderMode"];
                 render_mode = parseString(renderMode);
             } catch (exception) {
-                render_mode = "";
-                // TODO
-                cerr << "Warning: RenderMode not found or is invalid!" << endl;
+                cerr << "Warning: RenderMode not found! Default: phong" << endl;
+                render_mode = "phong";
             }
 
             try {
@@ -204,16 +191,18 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 int maxRecursionDepth = parseInt(maxRecDepthNode);
                 scene->setMaxRecursionDepth(maxRecursionDepth);
             } catch (exception) {
-                cerr << "Warning: Reflection recursion depth invalid! Default: 2" << endl;
-                scene->setMaxRecursionDepth(2);
+                cerr << "Warning: Reflection recursion depth invalid! Default: 0" << endl;
+                scene->setMaxRecursionDepth(0);
             }
             
             try {
-                const YAML::Node& camera = doc["Camera"];
-                scene->setCamera(*parseCamera(camera));
-                
+                Triple eye(parseTriple(doc["CameraEye"]));
+                Triple lookPoint(parseTriple(doc["CameraLookPoint"]));
+                Triple upVector(parseTriple(doc["CameraUpVector"]));
+                scene->setCamera(*new Camera(eye, lookPoint, upVector));
             } catch (exception) {
-                cerr << "Warning: Camera parameters not set!" << endl;
+                cerr << "Warning: Camera parameters not set! Will use eye parameter." << endl;
+                scene->setCameraFlag(false);
             }
 
             // Read and parse the scene objects
@@ -227,12 +216,9 @@ bool Raytracer::readScene(const std::string& inputFilename)
             {
                 Object *obj = parseObject(*it);
                 // Only add object if it is recognized
-                if (obj)
-                {
+                if (obj) {
                     scene->addObject(obj);
-                }
-                else
-                {
+                } else {
                     cerr << "Warning: found object of unknown type, ignored." << endl;
                 }
             }
