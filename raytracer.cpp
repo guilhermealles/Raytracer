@@ -124,6 +124,17 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     return new Light(position,color);
 }
 
+Camera* Raytracer::parseCamera(const YAML::Node& node)
+{
+    Point eye;
+    node["eye"] >> eye;
+    Vector viewDir;
+    node["viewDirection"] >> viewDir;
+    Vector up;
+    node["up"] >> up;
+    return new Camera(eye, viewDir, up);
+}
+
 /*
 * Read a scene from file
 */
@@ -193,6 +204,14 @@ bool Raytracer::readScene(const std::string& inputFilename)
             } catch (exception) {
                 cerr << "Warning: Reflection recursion depth invalid! Default: 2" << endl;
                 scene->setMaxRecursionDepth(2);
+            }
+            
+            try {
+                const YAML::Node& camera = doc["Camera"];
+                scene->setCamera(*parseCamera(camera));
+                
+            } catch (exception) {
+                cerr << "Warning: Camera parameters not set!" << endl;
             }
 
             // Read and parse the scene objects

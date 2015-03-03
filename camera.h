@@ -15,14 +15,16 @@ class Camera
 {
 private:
     Point eye;
-    Point center;
+    Vector viewDirection;
     Vector up;
 public:
+    Camera() { };
+    Camera(Point eye, Vector viewDirection, Vector up) : eye(eye), viewDirection(viewDirection), up(up) { };
     void setEye(Triple e);
-    void setCenter(Triple c);
+    void setViewDirection(Triple vD);
     void setUpVector(Triple upV);
     Triple getEye();
-    Triple getCenter();
+    Triple getViewDirection();
     Triple getUpVector();
 };
 

@@ -341,6 +341,13 @@ void Scene::setEye(Triple e)
     eye = e;
 }
 
+void Scene::setCamera(Camera c)
+{
+    camera.setEye(c.getEye());
+    camera.setViewDirection(c.getViewDirection());
+    camera.setUpVector(c.getUpVector());
+}
+
 void Scene::setAntiAliasing(bool state)
 {
     antiAliasingEnabled = state;

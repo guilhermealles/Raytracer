@@ -13,9 +13,9 @@ void Camera::setEye(Triple e)
     eye = e;
 }
 
-void Camera::setCenter(Triple c)
+void Camera::setViewDirection(Triple vD)
 {
-    center = c;
+    viewDirection = vD;
 }
 
 void Camera::setUpVector(Triple upV)
@@ -28,9 +28,9 @@ Triple Camera::getEye()
     return eye;
 }
 
-Triple Camera::getCenter()
+Triple Camera::getViewDirection()
 {
-    return center;
+    return viewDirection;
 }
 
 Triple Camera::getUpVector()

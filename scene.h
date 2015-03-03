@@ -22,6 +22,7 @@
 #include "light.h"
 #include "object.h"
 #include "image.h"
+#include "camera.h"
 
 class Scene
 {
@@ -29,6 +30,7 @@ private:
     std::vector<Object*> objects;
     std::vector<Light*> lights;
     Triple eye;
+    Camera camera;
     bool antiAliasingEnabled = false;
     bool shadowsEnabled = false;
     double min_t;
@@ -44,6 +46,7 @@ public:
     void addObject(Object *o);
     void addLight(Light *l);
     void setEye(Triple e);
+    void setCamera(Camera c);
     double max (double x, double y);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
