@@ -211,49 +211,29 @@ void Scene::render(Image &img, string mode)
         {
             for (int x = 0; x < w; x++)
             {
-                if (antiAliasingEnabled)
+                Color pixelColor(0.0f,0.0f,0.0f);
+                for(int subY = 0; subY < superSamplingRate; subY++)
                 {
-                    Color pixelColor(0.0f,0.0f,0.0f);
-                    for(int subY = 0; subY < 4; subY++)
+                    for(int subX = 0; subX < superSamplingRate; subX++)
                     {
-                        for(int subX = 0; subX < 4; subX++)
+                        if (cameraIsSet)
                         {
-                            if (cameraIsSet)
-                            {
-                                Ray ray(camera.getRay(x+((double)subX/4), h-1-y+((double)subY/4)));
-                                Color subColor = trace(ray, maxRecursionDepth);
-                                pixelColor += subColor;
-                            }
-                            else
-                            {
-                                Point pixel(x+((double)subX/4), h-1-y+((double)subY/4));
-                                Ray ray(eye, (pixel-eye).normalized());
-                                Color subColor = trace(ray, maxRecursionDepth);
-                                pixelColor += subColor;
-                            }
+                            Ray ray(camera.getRay(x+((double)subX/superSamplingRate), h-1-y+((double)subY/superSamplingRate)));
+                            Color subColor = trace(ray, maxRecursionDepth);
+                            pixelColor += subColor;
+                        }
+                        else
+                        {
+                            Point pixel(x+((double)subX/superSamplingRate), h-1-y+((double)subY/superSamplingRate));
+                            Ray ray(eye, (pixel-eye).normalized());
+                            Color subColor = trace(ray, maxRecursionDepth);
+                            pixelColor += subColor;
                         }
                     }
-                    pixelColor = pixelColor/(double)16; //grid of 4x4
-                    pixelColor.clamp();
-                    img(x,y) = pixelColor;
                 }
-                else
-                {
-                    Color col(0,0,0);
-                    if (cameraIsSet)
-                    {
-                        Ray ray(camera.getRay(x+0.5, h-1-y+0.5));
-                        col = trace(ray, maxRecursionDepth);
-                    }
-                    else
-                    {
-                        Point pixel(x+0.5, h-1-y+0.5, 0);
-                        Ray ray(eye, (pixel-eye).normalized());
-                        col = trace(ray, maxRecursionDepth);
-                    }
-                    col.clamp();
-                    img(x,y) = col;
-                }
+                pixelColor = pixelColor/(double)pow(superSamplingRate, 2); //grid of 4x4
+                pixelColor.clamp();
+                img(x,y) = pixelColor;
             }
         }
     }
@@ -326,9 +306,14 @@ void Scene::setCameraFlag (bool state)
     cameraIsSet = state;
 }
 
-void Scene::setAntiAliasing(bool state)
+void Scene::setSuperSampling(int rate)
 {
-    antiAliasingEnabled = state;
+    if (rate > 0) {
+        superSamplingRate = rate;
+    }
+    else {
+        superSamplingRate = 1;
+    }
 }
 
 void Scene::setShadows(bool state)

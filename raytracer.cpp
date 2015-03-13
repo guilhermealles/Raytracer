@@ -161,16 +161,19 @@ bool Raytracer::readScene(const std::string& inputFilename)
             }
 
             try {
-                const YAML::Node& antiAliasingNode = doc["AntiAliasing"];
-                string antiAliasingEnabled = parseString(antiAliasingNode);
-                if (antiAliasingEnabled == "true") {
-                    scene->setAntiAliasing(true);   
-                } else {
-                    scene->setAntiAliasing(false);
+                const YAML::Node& antiAliasingNode = doc["SuperSamplingRate"];
+                string superSamplingRateString = parseString(antiAliasingNode);
+                int superSamplingRate = (int) std::strtol(superSamplingRateString.c_str(), NULL, 10);
+                if (superSamplingRate > 0) {
+                    scene->setSuperSampling(superSamplingRate);
+                }
+                else {
+                    cerr << "Warning: invalid super sampling value! Default: 1" << endl;
+                    scene->setSuperSampling(1);
                 }
             } catch (exception) {
-                cerr << "Warning: AntiAliasing configs not found! Disabling AA..." << endl;
-                scene->setAntiAliasing(false);
+                cerr << "Warning: super sampling configs not found! Disabling anti aliasing..." << endl;
+                scene->setSuperSampling(1);
             }
             
             try {

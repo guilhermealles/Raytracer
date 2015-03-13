@@ -31,7 +31,7 @@ private:
     std::vector<Light*> lights;
     Triple eye;
     Camera camera;
-    bool antiAliasingEnabled = false;
+    int superSamplingRate = 1;
     bool shadowsEnabled = false;
     bool cameraIsSet = false;
     double min_t;
@@ -52,7 +52,7 @@ public:
     double max (double x, double y);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
-    void setAntiAliasing(bool state);
+    void setSuperSampling(int rate);
     void setShadows(bool state);
     void setMaxRecursionDepth(int recursionDepth);
 };
