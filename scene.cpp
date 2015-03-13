@@ -72,13 +72,13 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
     Color specular_component(0.0f,0.0f,0.0f);
     Color reflection_component(0.0f,0.0f,0.0f);
     
+    // The ambient component is added regardless of shadows
+    ambient_component += material->ka * material->color;
+    
     for (unsigned int i=0; i < lights.size(); i++)
     {
         Vector unitLight((lights.at(i)->position - hit).normalized());
         Vector reflection_vector((2*(unitLight.dot(N)))*N-unitLight);
-        
-        // The ambient component is added regardless of shadows
-        ambient_component += material->ka * material->color * lights.at(i)->color;
         
         if (shadowsEnabled)
         {
