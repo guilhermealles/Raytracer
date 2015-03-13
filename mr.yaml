@@ -29,6 +29,7 @@ Objects:
   position: [200,165,100]
   radius: 100
   material: # blue
+    texture: ../../../Raytracer/bluegrid.png
     color: [0.93,0.81,0.81]
     ka: 0.2
     kd: 0.7

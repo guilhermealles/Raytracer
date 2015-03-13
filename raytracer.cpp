@@ -63,6 +63,17 @@ string parseString(const YAML::Node& node)
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
     Material *m = new Material();
+    try {
+        string texture_filename;
+        node["texture"] >> texture_filename;
+        m->texture = new Image(texture_filename.c_str());
+        if (m->texture->width()==0 || m->texture->height()==0) {
+            m->texture = NULL;
+        }
+    }
+    catch (exception) {
+        m->texture = NULL;
+    }
     node["color"] >> m->color;	
     node["ka"] >> m->ka;
     node["kd"] >> m->kd;
