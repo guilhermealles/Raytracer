@@ -17,27 +17,12 @@
 #include "sphere.h"
 #include <iostream>
 #include <math.h>
+#define PI 3.14159265359
 
 /************************** Sphere **********************************/
 
 Hit Sphere::intersect(const Ray &ray)
 {
-    /****************************************************
-    * RT1.1: INTERSECTION CALCULATION
-    *
-    * Given: ray, position, r
-    * Sought: intersects? if true: *t
-    * 
-    * Insert calculation of ray/sphere intersection here. 
-    *
-    * You have the sphere's center (C) and radius (r) as well as
-    * the ray's origin (ray.O) and direction (ray.D).
-    *
-    * If the ray does not intersect the sphere, return false.
-    * Otherwise, return true and place the distance of the
-    * intersection point from the ray origin in *t (see example).
-    ****************************************************/
-    
     Vector L(position-ray.O);
     double tc = L.dot(ray.D);
     
@@ -65,4 +50,28 @@ Hit Sphere::intersect(const Ray &ray)
         }
         
     }
+}
+
+void Object::mapToTexture (Image texture, Hit hit, const Ray &ray, int* texture_coords)
+{
+    // Converts sphere to polar coordinates.
+    // Returns (u,v), which corresponds to the pixel of the texture image that will be the color of (x,y,z).
+    
+    Vector intersection_point(hit.t * ray.D);
+    
+    double theta = acos (intersection_point.y);
+    double phi = atan2 (intersection_point.z, intersection_point.x);
+    
+    if (phi < 0.0)
+    {
+        phi = phi + 2*PI;
+    }
+    
+    double u = phi / (2*PI);
+    double v = (PI - theta)/PI;
+    
+    int column = (int) (texture.width() - 1) * u;
+    int row = (int) (texture.height() - 1) * v;
+    texture_coords[0] = row;
+    texture_coords[1] = column;
 }

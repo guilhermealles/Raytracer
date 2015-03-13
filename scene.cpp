@@ -88,6 +88,7 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
             for (unsigned int i = 0; i < objects.size(); ++i) // Loops through all the objects in the scene,
             {
                 Hit hit(objects[i]->intersect(pointToLight));
+                
                 if (hit.t >= 0)
                 {
                     shadow = true;

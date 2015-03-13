@@ -20,6 +20,7 @@
 #include "triple.h"
 #include "hit.h"
 #include "ray.h"
+#include "image.h"
 
 class Material;
 
@@ -30,6 +31,9 @@ public:
     virtual ~Object() { }
 
     virtual Hit intersect(const Ray &ray) = 0;
+    
+    virtual void mapToTexture (Image texture, Hit hit, const Ray &ray, int* texture_coords);
+
 };
 
 #endif /* end of include guard: OBJECT_H_AXKLE0OF */

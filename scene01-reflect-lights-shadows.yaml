@@ -14,9 +14,9 @@
 
 Eye: [200,200,1000]
 
-CameraEye: [200,200,1000]
-CameraLookPoint: [200,200,100]
-CameraUpVector: [0,1,0]
+CameraEye: [200,400,1000]
+CameraLookPoint: [200,250,100]
+CameraUpVector: [1,-1,0]
 
 RenderMode: phong
 SuperSamplingRate: 1
