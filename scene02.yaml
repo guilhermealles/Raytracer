@@ -4,6 +4,7 @@
 Eye: [200,200,1000]
 
 RenderMode: phong
+SuperSamplingRate = 1
 
 Lights:
 - position: [-1000,600,500]
