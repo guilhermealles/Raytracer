@@ -25,6 +25,9 @@ public:
     Sphere(Point position,double r) : position(position), r(r) { }
 
     virtual Hit intersect(const Ray &ray);
+    virtual Color getTextureColor(Hit hit, const Ray &ray);
+    
+    void mapToTexture(Hit hit, const Ray &ray, int* texture_coords);
 
     const Point position;
     const double r;

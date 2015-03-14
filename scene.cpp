@@ -72,8 +72,10 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
     Color specular_component(0.0f,0.0f,0.0f);
     Color reflection_component(0.0f,0.0f,0.0f);
     
+    Color objectColor = obj->getTextureColor(min_hit, ray);
+    
     // The ambient component is added regardless of shadows
-    ambient_component += material->ka * material->color;
+    ambient_component += material->ka * objectColor;
     
     for (unsigned int i=0; i < lights.size(); i++)
     {
@@ -103,7 +105,7 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
                 double specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
                 
                 specular_component += specular_factor * lights.at(i)->color;
-                diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
+                diffuse_component += material->kd * cosine_factor * objectColor * lights.at(i)->color;
             }
         }
         else
@@ -114,7 +116,7 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
             double specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
             
             specular_component += specular_factor * lights.at(i)->color;
-            diffuse_component += material->kd * cosine_factor * material->color * lights.at(i)->color;
+            diffuse_component += material->kd * cosine_factor * objectColor * lights.at(i)->color;
         }
         
         // Add reflection component

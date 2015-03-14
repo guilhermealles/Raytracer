@@ -21,8 +21,9 @@
 #include "hit.h"
 #include "ray.h"
 #include "image.h"
+#include "material.h"
 
-class Material;
+//class Material;
 
 class Object {
 public:
@@ -32,8 +33,9 @@ public:
 
     virtual Hit intersect(const Ray &ray) = 0;
     
-    virtual void mapToTexture (Image texture, Hit hit, const Ray &ray, int* texture_coords);
-
+    virtual Color getTextureColor(Hit hit, const Ray &ray) {
+        return material->color;
+    };
 };
 
 #endif /* end of include guard: OBJECT_H_AXKLE0OF */
