@@ -15,7 +15,7 @@
 Eye: [200,200,1000]
 
 RenderMode: phong
-SuperSamplingRate = 1
+SuperSamplingRate: 1
 
 Lights:
 - position: [-200,600,1500]
@@ -26,6 +26,7 @@ Objects:
   position: [90,320,100]
   radius: 50
   material: # blue
+    texture: ../../../Raytracer/bluegrid.png
     color: [0.0,0.0,1.0]
     ka: 0.2
     kd: 0.7

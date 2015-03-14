@@ -50,8 +50,8 @@ public:
     void setCamera(Camera c);
     void setCameraFlag(bool state);
     double max (double x, double y);
-    unsigned int getNumObjects() { return objects.size(); }
-    unsigned int getNumLights() { return lights.size(); }
+    unsigned int getNumObjects() { return (unsigned int)objects.size(); }
+    unsigned int getNumLights() { return (unsigned int)lights.size(); }
     void setSuperSampling(int rate);
     void setShadows(bool state);
     void setMaxRecursionDepth(int recursionDepth);

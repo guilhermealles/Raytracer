@@ -56,7 +56,7 @@ namespace YAML
 		
 		bool InFlowContext() const { return !m_flows.empty(); }
 		bool InBlockContext() const { return m_flows.empty(); }
-		int GetFlowLevel() const { return m_flows.size(); }
+		int GetFlowLevel() const { return (int)m_flows.size(); }
 		
 		IndentMarker *PushIndentTo(int column, IndentMarker::INDENT_TYPE type);
 		void PopIndentToHere();

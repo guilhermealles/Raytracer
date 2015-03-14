@@ -14,7 +14,7 @@
 
 Eye: [200,200,1000]  
 
-SuperSamplingRate: 4
+SuperSamplingRate: 1
 Shadows: true
 MaxRecursionDepth: 2
 

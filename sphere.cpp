@@ -70,7 +70,7 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, int* texture_coords)
     // Converts sphere to polar coordinates.
     // Returns (u,v), which corresponds to the pixel of the texture image that will be the color of (x,y,z).
     
-    Vector intersection_point(hit.t * ray.D);
+    Vector intersection_point(ray.at(hit.t));
     
     double theta = acos ((intersection_point.z - position.z)/r);
     double phi = atan2 (intersection_point.y - position.y, intersection_point.x - position.x);
@@ -82,9 +82,12 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, int* texture_coords)
     
     double u = phi / (2*PI);
     double v = (PI - theta)/PI;
-    
+        
     int column = (int) (material->texture->width() - 1) * u;
     int row = (int) (material->texture->height() - 1) * v;
-    texture_coords[0] = row;
-    texture_coords[1] = column;
+    
+    cout << row << ", " << column << endl;
+    
+    texture_coords[0] = column;
+    texture_coords[1] = row;
 }
