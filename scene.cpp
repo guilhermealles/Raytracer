@@ -48,24 +48,6 @@ Color Scene::trace(const Ray &ray, int recursionLevel)
     Point hit = ray.at(min_hit.t);                 //the hit point
     Vector N = min_hit.N;                          //the normal at hit point
     Vector V = -ray.D;                             //the view vector
-
-    /****************************************************
-    * This is where you should insert the color
-    * calculation (Phong model).
-    *
-    * Given: material, hit, N, V, lights[]
-    * Sought: color
-    *
-    * Hints: (see triple.h)
-    *        Triple.dot(Vector) dot product
-    *        Vector+Vector      vector sum
-    *        Vector-Vector      vector difference
-    *        Point-Point        yields vector
-    *        Vector.normalize() normalizes vector, returns length
-    *        double*Color        scales each color component (r,g,b)
-    *        Color*Color        dito
-    *        pow(a,b)           a to the power of b
-    ****************************************************/
     
     Color ambient_component(0.0f,0.0f,0.0f);
     Color diffuse_component(0.0f,0.0f,0.0f);
@@ -168,9 +150,64 @@ Color Scene::normalBufferTrace(const Ray &ray)
     // transformar de -1,1 a 0,1
     N = N / 2 + 0.5;
     
-    
     Color color(N);
     return color;
+}
+
+Color Scene::goochTrace(const Ray &ray)
+{
+    // Find hit object and distance
+    Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
+    Object *obj = NULL;
+    
+    for (unsigned int i = 0; i < objects.size(); ++i)
+    {
+        Hit hit(objects[i]->intersect(ray));
+        
+        if (hit.t<min_hit.t)
+        {
+            min_hit = hit;
+            obj = objects[i];
+        }
+    }
+    
+    // No hit? Return background color.
+    if (!obj) return Color(0.0, 0.0, 0.0);
+   
+    Vector N = min_hit.N;                          //the normal at hit point
+    Point hit = ray.at(min_hit.t);                 //the hit point
+    
+    // b and y determine the strength of the overall temperature shift. Both between 0 and 1.
+    // alpha and beta will determine the prominence of the object color and the strength of the luminance shift.
+    Color k_blue (0.0, 0.0, gooch_b);
+    Color k_yellow (gooch_y, gooch_y, 0.0);
+    
+    Material *material = obj->material;
+    Vector V = -ray.D;
+    Color ambient_component(0.0f,0.0f,0.0f);
+    Color diffuse_component(0.0f,0.0f,0.0f);
+    Color specular_component(0.0f,0.0f,0.0f);
+
+    Vector unit_light ((lights.at(0)->position - hit).normalized());
+    Vector reflection_vector((2*(unit_light.dot(N)))*N-unit_light);
+        
+    diffuse_component = lights[0]->color * material->color * material->kd;
+        
+    double specular_factor = material->ks * pow(max(0,reflection_vector.dot(V)), material->n);
+    double cosine_factor = N.normalized().dot(unit_light);
+        
+    if (cosine_factor < 0)
+    {
+        cosine_factor = 0;
+    }
+        
+    specular_component = specular_factor * lights.at(0)->color;
+
+    Color k_cool = k_blue + gooch_alpha * diffuse_component;
+    Color k_warm = k_yellow + gooch_beta * diffuse_component;
+    Color pixel_color = (k_cool * (1 - N.dot(unit_light))/2 + k_warm * (1 + N.dot(unit_light))/2) + specular_component;
+    
+    return pixel_color;
 }
 
 void Scene::render(Image &img, string mode)
@@ -201,6 +238,20 @@ void Scene::render(Image &img, string mode)
                 Point pixel(x+0.5, h-1-y+0.5, 0);
                 Ray ray(eye, (pixel-eye).normalized());
                 Color col = normalBufferTrace(ray);
+                col.clamp();
+                img(x,y) = col;
+            }
+        }
+    }
+    else if (mode == "gooch") // Gooch shading
+    {
+        for (int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; x++)
+            {
+                Point pixel(x+0.5, h-1-y+0.5, 0);
+                Ray ray(eye, (pixel-eye).normalized());
+                Color col = goochTrace(ray);
                 col.clamp();
                 img(x,y) = col;
             }
@@ -327,4 +378,12 @@ void Scene::setShadows(bool state)
 void Scene::setMaxRecursionDepth(int recursionDepth)
 {
     maxRecursionDepth = recursionDepth;
+}
+
+void Scene::setGoochParameters(double* b, double* y, double* alpha, double* beta)
+{
+    gooch_b = *b;
+    gooch_y = *y;
+    gooch_alpha = *alpha;
+    gooch_beta = *beta;
 }

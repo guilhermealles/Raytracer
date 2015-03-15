@@ -53,6 +53,21 @@ int parseInt(const YAML::Node& node)
     return i;
 }
 
+void Raytracer:: parseGoochParameters(const YAML::Node& node, double*  b_pointer, double* y_pointer, double* alpha_pointer, double* beta_pointer)
+{
+    double b, y, alpha, beta;
+    
+    node["b"] >> b;
+    node["y"] >> y;
+    node["alpha"] >> alpha;
+    node["beta"]>> beta;
+    
+    *b_pointer = b;
+    *y_pointer = y;
+    *alpha_pointer = alpha;
+    *beta_pointer = beta;
+}
+
 string parseString(const YAML::Node& node)
 {
     std::string s;
@@ -63,15 +78,20 @@ string parseString(const YAML::Node& node)
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
     Material *m = new Material();
-    try {
+    
+    try
+    {
         string texture_filename;
         node["texture"] >> texture_filename;
         m->texture = new Image(texture_filename.c_str());
-        if (m->texture->width()==0 || m->texture->height()==0) {
+        
+        if (m->texture->width()==0 || m->texture->height()==0)
+        {
             m->texture = NULL;
         }
     }
-    catch (exception) {
+    catch (exception)
+    {
         m->texture = NULL;
     }
     node["color"] >> m->color;	
@@ -166,6 +186,27 @@ bool Raytracer::readScene(const std::string& inputFilename)
             try {
                 const YAML::Node& renderMode = doc["RenderMode"];
                 render_mode = parseString(renderMode);
+                
+                if (render_mode == "gooch")
+                {
+                    if (doc.FindValue("GoochParameters"))
+                    {
+                        double b, y, alpha, beta;
+                        const auto& gooch = doc["GoochParameters"];
+                        gooch["alpha"] >> alpha;
+                        gooch["beta"] >> beta;
+                        gooch["b"] >> b;
+                        gooch["y"] >> y;
+                        
+                        scene->setGoochParameters(&b, &y, &alpha, &beta);
+                    }
+                    else
+                    {
+                        cerr << "Error: expected a sequence of Gooch parameters." << endl;
+                        return false;
+                    }
+                }
+                
             } catch (exception) {
                 cerr << "Warning: RenderMode not found! Default: phong" << endl;
                 render_mode = "phong";
