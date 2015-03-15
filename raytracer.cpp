@@ -17,6 +17,7 @@
 #include "sphere.h"
 #include "plane.h"
 #include "triangle.h"
+#include "Tetrahedron.h"
 #include "material.h"
 #include "light.h"
 #include "image.h"
@@ -136,6 +137,17 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["point3"] >> point3;
         Triangle *triangle = new Triangle(point1, point2, point3);
         returnObject = triangle;
+    }
+    
+    if (objectType == "tetrahedron")
+    {
+        Point vertice1, vertice2, vertice3, vertice4;
+        node["point1"] >> vertice1;
+        node["point2"] >> vertice2;
+        node["point3"] >> vertice3;
+        node["point4"] >> vertice4;
+        Tetrahedron *tetrahedron = new Tetrahedron(vertice1, vertice2, vertice3, vertice4);
+        returnObject = tetrahedron;
     }
 
     if (returnObject) {
