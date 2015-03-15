@@ -12,14 +12,18 @@
 #  The example scene description should largely speak for itself. By now
 #  it should be clear that the #-character can be used to insert comments.
 
-Eye: [200,200,1000]
+Eye: [200,200,1000]  
 
-RenderMode: phong
-SuperSamplingRate: 1
+Shadows: true
+MaxRecursionDepth: 2
+SuperSampling:
+  factor: 4
 
 Lights:
 - position: [-200,600,1500]
-  color: [1.0,1.0,1.0]
+  color: [0.4,0.4,0.8]
+- position: [600,600,1500]
+  color: [0.8,0.8,0.4]
 
 Objects:
 - type: sphere
@@ -51,13 +55,13 @@ Objects:
     n: 32
 - type: sphere
   position: [140,220,400]
-  radius: 50
-  material: # yellow
-    texture: ../../../Raytracer/textures/earth.png
-    color: [1.0,0.8,0.0]
+  radius: [50,[0,1,0.7]]
+  angle: 90
+  material:
+    texture: earthmap1k.png
     ka: 0.2
     kd: 0.8
-    ks: 0.0
+    ks: 0
     n: 1
 - type: sphere
   position: [110,130,200]
@@ -68,4 +72,12 @@ Objects:
     kd: 0.8
     ks: 0.5
     n: 32
-
+- type: sphere
+  position: [200,200,-1000]
+  radius: 1000
+  material: # grey
+    color: [0.4,0.4,0.4]
+    ka: 0.2
+    kd: 0.8
+    ks: 0
+    n: 1

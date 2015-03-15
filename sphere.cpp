@@ -67,10 +67,11 @@ Color Sphere::getTextureColor(Hit hit, const Ray &ray) {
 
 void Sphere::mapToTexture (Hit hit, const Ray &ray, double* texture_coords)
 {
-    // Converts sphere to polar coordinates.
+    // Converts sphere to spherical coordinates.
     // Returns (u,v), which corresponds to the pixel of the texture image that will be the color of (x,y,z).
     
     Vector intersection_point(ray.at(hit.t));
+    
     
     double theta = acos ((intersection_point.z - position.z)/r);
     double phi = atan2 (intersection_point.y - position.y, intersection_point.x - position.x);
@@ -82,6 +83,14 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, double* texture_coords)
     
     double u = phi / (2*PI);
     double v = (PI - theta)/PI;
+    
+    // This might solve the segmentation fault problems
+    if (u > 1.0 || u < 0.0) {
+        u -= ((int)(u/1)); // consider only the decimal parts of u
+    }
+    if (v > 1.0 || v < 0.0) {
+        v -= ((int)(v/1)); // consider only the decimal parts of v
+    }
     
     texture_coords[0] = u;
     texture_coords[1] = v;
