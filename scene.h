@@ -37,8 +37,15 @@ private:
     double min_t;
     double max_t;
     int maxRecursionDepth;
+    // Gooch parameters
+    double gooch_b;
+    double gooch_y;
+    double gooch_alpha;
+    double gooch_beta;
+    
 public:
     Color trace(const Ray &ray, int recursion = 0);
+    Color goochTrace (const Ray &ray);
     Color zBufferTrace(const Ray &ray);
     Color normalBufferTrace(const Ray &ray);
     void render(Image &img, string mode);
@@ -55,6 +62,7 @@ public:
     void setSuperSampling(int rate);
     void setShadows(bool state);
     void setMaxRecursionDepth(int recursionDepth);
+    void setGoochParameters(double* b, double* y, double* alpha, double* beta);
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
