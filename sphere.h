@@ -27,7 +27,7 @@ public:
     virtual Hit intersect(const Ray &ray);
     virtual Color getTextureColor(Hit hit, const Ray &ray);
     
-    void mapToTexture(Hit hit, const Ray &ray, int* texture_coords);
+    void mapToTexture(Hit hit, const Ray &ray, double* texture_coords);
 
     const Point position;
     const double r;

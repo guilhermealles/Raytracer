@@ -26,7 +26,6 @@ Objects:
   position: [90,320,100]
   radius: 50
   material: # blue
-    texture: ../../../Raytracer/bluegrid.png
     color: [0.0,0.0,1.0]
     ka: 0.2
     kd: 0.7
@@ -36,6 +35,7 @@ Objects:
   position: [210,270,300]
   radius: 50
   material: # green
+    texture: ../../../Raytracer/textures/earth.png
     color: [0.0,1.0,0.0]
     ka: 0.2
     kd: 0.3

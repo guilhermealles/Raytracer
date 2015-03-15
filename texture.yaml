@@ -1,0 +1,22 @@
+Eye: [50,0,1000]
+
+RenderMode: phong
+SuperSamplingRate: 1
+Shadows: false
+MaxRecursionDepth: 1
+
+Lights:
+- position: [-200,600,1500]
+  color: [1.0,1.0,1.0]
+
+Objects:
+- type: sphere
+  position: [150,100,400]
+  radius: 80
+  material: # white
+    texture: ../../../Raytracer/textures/earth.png
+    color: [1.0,1.0,1.0]
+    ka: 0.3
+    kd: 0.7
+    ks: 0.0
+    n: 64
