@@ -25,9 +25,9 @@ Objects:
 
 - type: tetrahedron
   point1: [350,120,100]
-  point2: [240,200,200]
-  point3: [300,50,200]
-  point4: [1000,1000,200]
+  point2: [240,120,200]
+  point3: [300,90,300]
+  point4: [280,300,120]
   material: # blue
     color: [0.0,1.0,0.0]
     ka: 0.2

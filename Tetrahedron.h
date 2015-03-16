@@ -26,4 +26,4 @@ public:
     const Point p3;
 };
 
-#endif /* defined(__Raytracer__tetrahedron__) */
+#endif
