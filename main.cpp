@@ -21,12 +21,8 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     cout << "Introduction to Computer Graphics - Raytracer" << endl << endl;
-<<<<<<< HEAD
     
-    string const SCENE_FILE = "../../../Raytracer/scene01-gooch.yaml";
-=======
     string const SCENE_FILE = "../../../Raytracer/teste.yaml";
->>>>>>> origin/master
     string const OUTPUT_FILE = "../../../Raytracer/out.png";
 
     Raytracer raytracer;

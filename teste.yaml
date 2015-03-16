@@ -12,33 +12,35 @@
 #  The example scene description should largely speak for itself. By now
 #  it should be clear that the #-character can be used to insert comments.
 
-Eye: [0,0,1000]
-
-CameraEye: [0,0,1000]
-CameraLookPoint: [0,0,0]
-CameraUpVector: [0,1,0]
+Eye: [200,200,1000]
 
 RenderMode: phong
 SuperSamplingRate: 1
-Shadows: true
-MaxRecursionDepth: 2
 
 Lights:
 - position: [-200,600,1500]
-  color: [0.4,0.4,0.8]
-- position: [600,600,1500]
-  color: [0.8,0.8,0.4]
+  color: [1.0,1.0,1.0]
 
 Objects:
+
 - type: tetrahedron
-  point1: [-180,120,100]
-  point2: [-80,120,200]
-  point3: [-80,50,200]
-  point4: [-60,80,150]
-  material: # green
+  point1: [350,120,100]
+  point2: [240,200,200]
+  point3: [300,50,200]
+  point4: [1000,1000,200]
+  material: # blue
     color: [0.0,1.0,0.0]
     ka: 0.2
-    kd: 0.3
+    kd: 0.7
     ks: 0.5
-    n: 8
+    n: 64
 
+- type: sphere
+  position: [90,320,100]
+  radius: 50
+  material: # blue
+    color: [0.0,0.0,1.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
