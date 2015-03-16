@@ -1,9 +1,11 @@
 Eye: [50,0,1000]
 
 RenderMode: phong
-SuperSamplingRate: 1
+SuperSamplingRate: 4
 Shadows: false
 MaxRecursionDepth: 1
+
+TriangleMesh: ../../../Raytracer/meshes/devilduk.obj
 
 Lights:
 - position: [-200,600,1500]
@@ -11,8 +13,8 @@ Lights:
 
 Objects:
 - type: sphere
-  position: [150,100,400]
-  radius: 80
+  position: [100,100,400]
+  radius: 20
   material: # white
     texture: ../../../Raytracer/textures/earth.png
     color: [1.0,1.0,1.0]

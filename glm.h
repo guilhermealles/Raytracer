@@ -64,7 +64,7 @@ extern "C" {
     /* GLMgroup: Structure that defines a group in a model.
      */
     typedef struct _GLMgroup {
-        char*             name;     /* name of this group */
+        char*                   name;     /* name of this group */
         unsigned int            numtriangles; /* number of triangles in this group */
         unsigned int*           triangles;        /* array of triangle indices */
         unsigned int            material;           /* index to material for group */
@@ -74,31 +74,31 @@ extern "C" {
     /* GLMmodel: Structure that defines a model.
      */
     typedef struct _GLMmodel {
-        char*    pathname;          /* path to this model */
-        char*    mtllibname;            /* name of the material library */
+        char*           pathname;          /* path to this model */
+        char*           mtllibname;            /* name of the material library */
         
         unsigned int   numvertices;           /* number of vertices in model */
-        float* vertices;          /* array of vertices  */
+        float*          vertices;          /* array of vertices  */
         
-        unsigned int   numnormals;            /* number of normals in model */
-        float* normals;           /* array of normals */
+        unsigned int    numnormals;            /* number of normals in model */
+        float*          normals;           /* array of normals */
         
         unsigned int   numtexcoords;      /* number of texcoords in model */
-        float* texcoords;         /* array of texture coordinates */
+        float*          texcoords;         /* array of texture coordinates */
         
-        unsigned int   numfacetnorms;     /* number of facetnorms in model */
-        float* facetnorms;            /* array of facetnorms */
+        unsigned int    numfacetnorms;     /* number of facetnorms in model */
+        float*          facetnorms;            /* array of facetnorms */
         
-        unsigned int       numtriangles;      /* number of triangles in model */
-        GLMtriangle* triangles;     /* array of triangles */
+        unsigned int    numtriangles;      /* number of triangles in model */
+        GLMtriangle*    triangles;     /* array of triangles */
         
-        unsigned int       nummaterials;      /* number of materials in model */
-        GLMmaterial* materials;     /* array of materials */
+        unsigned int    nummaterials;      /* number of materials in model */
+        GLMmaterial*    materials;     /* array of materials */
         
-        unsigned int       numgroups;     /* number of groups in model */
-        GLMgroup*    groups;            /* linked list of groups */
+        unsigned int    numgroups;     /* number of groups in model */
+        GLMgroup*       groups;            /* linked list of groups */
         
-        float position[3];            /* position of the model */
+        float           position[3];            /* position of the model */
         
     } GLMmodel;
     
@@ -219,21 +219,6 @@ extern "C" {
      */
     void
     glmWriteOBJ(GLMmodel* model, char* filename, unsigned int mode);
-    
-    /* glmDraw: Renders the model to the current OpenGL context using the
-     * mode specified.
-     *
-     * model    - initialized GLMmodel structure
-     * mode     - a bitwise OR of values describing what is to be rendered.
-     *            GLM_NONE    -  render with only vertices
-     *            GLM_FLAT    -  render with facet normals
-     *            GLM_SMOOTH  -  render with vertex normals
-     *            GLM_TEXTURE -  render with texture coords
-     *            GLM_FLAT and GLM_SMOOTH should not both be specified.
-     */
-    void
-    glmDraw(GLMmodel* model, unsigned int mode);
-    
     /* glmList: Generates and returns a display list for the model using
      * the mode specified.
      *

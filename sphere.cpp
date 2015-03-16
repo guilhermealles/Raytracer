@@ -75,7 +75,7 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, double* texture_coords)
     
     double theta = acos ((intersection_point.z - position.z)/r);
     double phi = atan2 (intersection_point.y - position.y, intersection_point.x - position.x);
-
+    
     if (phi < 0.0)
     {
         phi = phi + 2*PI;

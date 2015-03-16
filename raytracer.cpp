@@ -22,6 +22,7 @@
 #include "light.h"
 #include "image.h"
 #include "yaml/yaml.h"
+#include "glm.h"
 #include <ctype.h>
 #include <fstream>
 #include <assert.h>
@@ -115,7 +116,7 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["position"] >> pos;
         double r;
         node["radius"] >> r;
-        Sphere *sphere = new Sphere(pos,r);		
+        Sphere *sphere = new Sphere(pos,r);
         returnObject = sphere;
     }
     
@@ -165,6 +166,55 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     Color color;
     node["color"] >> color;
     return new Light(position,color);
+}
+
+void parseTriangleMesh(string model_filename, Scene *scene) {
+    // The next 3 lines convert "std::string" type to "char*"
+    char *char_filename = new char[model_filename.size() + 1];
+    std::copy(model_filename.begin(), model_filename.end(), char_filename);
+    char_filename[model_filename.size()] = '\0';
+    
+    GLMmodel *model = glmReadOBJ(char_filename);
+    
+    glmScale(model, 200);
+    
+    GLMgroup *group = model->groups;
+    // Loops through all the groups in this model
+    while (group) {
+        // Loops through all the triangles in this group
+        for (unsigned int i=0; i<group->numtriangles; i++) {
+            GLMtriangle triangle = model->triangles[group->triangles[i]];
+            Vector triangle_indices(triangle.vindices[0], triangle.vindices[1], triangle.vindices[2]);
+            Vector triangle_vertices[3] = {
+                Vector(model->vertices[(int)triangle_indices.data[0]*3], model->vertices[(int)triangle_indices.data[0]*3+1], model->vertices[(int)triangle_indices.data[0]*3+2]),
+                Vector(model->vertices[(int)triangle_indices.data[1]*3], model->vertices[(int)triangle_indices.data[1]*3+1], model->vertices[(int)triangle_indices.data[1]*3+2]),
+                Vector(model->vertices[(int)triangle_indices.data[2]*3], model->vertices[(int)triangle_indices.data[2]*3+1], model->vertices[(int)triangle_indices.data[2]*3+2]),
+            };
+            // Add the position of the model to the vertices of the triangles
+            //Point model_position(model->position[0], model->position[1], model->position[2]);
+            Point model_position(170, 100, 400);
+            
+            triangle_vertices[0] += model_position;
+            triangle_vertices[1] += model_position;
+            triangle_vertices[2] += model_position;
+            
+            Triangle *t = new Triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2]);
+            
+            Material *triangle_material = new Material();
+            Color *triangle_color = new Color(1.0,1.0,1.0);
+            triangle_material->color = *triangle_color;
+            triangle_material->ka = 0.8;
+            triangle_material->kd = 0.8;
+            triangle_material->ks = 0.2;
+            triangle_material->n = 128;
+            
+            t->material = triangle_material;
+            
+            scene->addObject(t);
+        }
+        group = group->next;
+    }
+    delete[] char_filename;
 }
 
 /*
@@ -272,6 +322,18 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 cerr << "Warning: Camera parameters not set! Will use eye parameter." << endl;
                 scene->setCameraFlag(false);
             }
+            
+            try {
+                const YAML::Node& triangleMeshNode = doc["TriangleMesh"];
+                string modelFilename = parseString(triangleMeshNode);
+                if (modelFilename.empty() == false) {
+                    parseTriangleMesh(modelFilename, scene);
+                }
+
+            } catch (exception) {
+                
+            }
+            
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
