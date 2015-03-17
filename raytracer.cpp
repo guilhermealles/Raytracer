@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <fstream>
 #include <assert.h>
+#include <stdlib.h>
 
 // Functions to ease reading from YAML input
 void operator >> (const YAML::Node& node, Triple& t);
@@ -255,7 +256,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
                     if (doc.FindValue("GoochParameters"))
                     {
                         double b, y, alpha, beta;
-                        const auto& gooch = doc["GoochParameters"];
+                        const YAML::Node& gooch = doc["GoochParameters"];
                         gooch["alpha"] >> alpha;
                         gooch["beta"] >> beta;
                         gooch["b"] >> b;
@@ -278,7 +279,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             try {
                 const YAML::Node& antiAliasingNode = doc["SuperSamplingRate"];
                 string superSamplingRateString = parseString(antiAliasingNode);
-                int superSamplingRate = (int) std::strtol(superSamplingRateString.c_str(), NULL, 10);
+                int superSamplingRate = (int) strtol(superSamplingRateString.c_str(), NULL, 10);
                 if (superSamplingRate > 0) {
                     scene->setSuperSampling(superSamplingRate);
                 }

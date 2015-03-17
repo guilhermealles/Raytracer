@@ -29,6 +29,8 @@
 
 
 #define T(x) (model->triangles[(x)])
+#define GL_TRUE 1
+#define GL_FALSE 0
 
 
 /* _GLMnode: general purpose node
