@@ -1,11 +1,19 @@
 Eye: [50,0,1000]
 
 RenderMode: phong
-SuperSamplingRate: 4
+SuperSamplingRate: 1
 Shadows: false
 MaxRecursionDepth: 1
 
-TriangleMesh: ../../../Raytracer/meshes/devilduk.obj
+MeshFile: ../../../Raytracer/meshes/devilduk.obj
+MeshPosition: [100,0,800]
+MeshScale: 80
+MeshMaterial:
+  color: [0.5,0.5,0.5]
+  ka: 0.3
+  kd: 0.7
+  ks: 0.0
+  n: 128
 
 Lights:
 - position: [-200,600,1500]

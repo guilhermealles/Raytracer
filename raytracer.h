@@ -35,6 +35,7 @@ private:
     Light* parseLight(const YAML::Node& node);
     Camera* parseCamera(const YAML::Node& node);
     void parseGoochParameters(const YAML::Node& node, double*  b_pointer, double* y_pointer, double* alpha_pointer, double* beta_pointer);
+    void parseTriangleMesh(const YAML::Node& node, Scene *scene);
 
 public:
     

@@ -168,7 +168,11 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     return new Light(position,color);
 }
 
-void parseTriangleMesh(string model_filename, Scene *scene) {
+void Raytracer::parseTriangleMesh(const YAML::Node& node, Scene *scene) {
+    string model_filename = parseString(node["MeshFile"]);
+    if (model_filename.empty()) {
+        return;
+    }
     // The next 3 lines convert "std::string" type to "char*"
     char *char_filename = new char[model_filename.size() + 1];
     std::copy(model_filename.begin(), model_filename.end(), char_filename);
@@ -176,7 +180,11 @@ void parseTriangleMesh(string model_filename, Scene *scene) {
     
     GLMmodel *model = glmReadOBJ(char_filename);
     
-    glmScale(model, 200);
+    float scaleFactor;
+    node["MeshScale"] >> scaleFactor;
+    glmScale(model, scaleFactor);
+    
+    Material *m = parseMaterial(node["MeshMaterial"]);
     
     GLMgroup *group = model->groups;
     // Loops through all the groups in this model
@@ -190,9 +198,10 @@ void parseTriangleMesh(string model_filename, Scene *scene) {
                 Vector(model->vertices[(int)triangle_indices.data[1]*3], model->vertices[(int)triangle_indices.data[1]*3+1], model->vertices[(int)triangle_indices.data[1]*3+2]),
                 Vector(model->vertices[(int)triangle_indices.data[2]*3], model->vertices[(int)triangle_indices.data[2]*3+1], model->vertices[(int)triangle_indices.data[2]*3+2]),
             };
+            
             // Add the position of the model to the vertices of the triangles
-            //Point model_position(model->position[0], model->position[1], model->position[2]);
-            Point model_position(170, 100, 400);
+            Point model_position;
+            model_position = parseTriple(node["MeshPosition"]);
             
             triangle_vertices[0] += model_position;
             triangle_vertices[1] += model_position;
@@ -200,15 +209,7 @@ void parseTriangleMesh(string model_filename, Scene *scene) {
             
             Triangle *t = new Triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2]);
             
-            Material *triangle_material = new Material();
-            Color *triangle_color = new Color(1.0,1.0,1.0);
-            triangle_material->color = *triangle_color;
-            triangle_material->ka = 0.8;
-            triangle_material->kd = 0.8;
-            triangle_material->ks = 0.2;
-            triangle_material->n = 128;
-            
-            t->material = triangle_material;
+            t->material = m;
             
             scene->addObject(t);
         }
@@ -324,14 +325,9 @@ bool Raytracer::readScene(const std::string& inputFilename)
             }
             
             try {
-                const YAML::Node& triangleMeshNode = doc["TriangleMesh"];
-                string modelFilename = parseString(triangleMeshNode);
-                if (modelFilename.empty() == false) {
-                    parseTriangleMesh(modelFilename, scene);
-                }
-
+                parseTriangleMesh(doc, scene);
             } catch (exception) {
-                
+                cout << "Triangle Mesh was not found or is invalid!" << endl;
             }
             
 
