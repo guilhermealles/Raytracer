@@ -8,20 +8,7 @@
  Includes routines for generating smooth normals with
  preservation of edges, welding redundant vertices & texture
  coordinate generation (spheremap and planar projections) + more.
- 
  */
-
-/* Apparently Mac OS X puts the GLUT headers somewhere different.
- For windows we use freeglut.
- */
-#if defined(__APPLE__)&& defined(__MACH__)
-#include <GLUT/glut.h>
-#elif defined(_WIN32)
-#include <GL/freeglut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -217,34 +204,6 @@ extern "C" {
      *            GLM_TEXTURE -  write texture coords
      *            GLM_FLAT and GLM_SMOOTH should not both be specified.
      */
-    void
-    glmWriteOBJ(GLMmodel* model, char* filename, unsigned int mode);
-    /* glmList: Generates and returns a display list for the model using
-     * the mode specified.
-     *
-     * model    - initialized GLMmodel structure
-     * mode     - a bitwise OR of values describing what is to be rendered.
-     *            GLM_NONE    -  render with only vertices
-     *            GLM_FLAT    -  render with facet normals
-     *            GLM_SMOOTH  -  render with vertex normals
-     *            GLM_TEXTURE -  render with texture coords
-     *            GLM_FLAT and GLM_SMOOTH should not both be specified.
-     */
-    unsigned int
-    glmList(GLMmodel* model, unsigned int mode);
-    
-    /* glmWeld: eliminate (weld) vectors that are within an epsilon of
-     * each other.
-     *
-     * model      - initialized GLMmodel structure
-     * epsilon    - maximum difference between vertices
-     *              ( 0.00001 is a good start for a unitized model)
-     *
-     */
-    unsigned int
-    glmWeld(GLMmodel* model, float epsilon);
-    
-    
 #ifdef __cplusplus
 }
 #endif
