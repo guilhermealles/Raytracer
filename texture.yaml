@@ -1,19 +1,13 @@
 Eye: [50,0,1000]
 
 RenderMode: phong
-SuperSamplingRate: 4
+SuperSamplingRate: 1
 Shadows: false
 MaxRecursionDepth: 1
 
-MeshFile: ./meshes/devilduk.obj
+MeshFile: ../../../Raytracer/meshes/devilduk.obj
 MeshPosition: [100,0,800]
 MeshScale: 80
-MeshMaterial:
-  color: [0.5,0.5,0.5]
-  ka: 0.3
-  kd: 0.7
-  ks: 0.0
-  n: 128
 
 Lights:
 - position: [-200,600,1500]
@@ -24,9 +18,17 @@ Objects:
   position: [100,100,400]
   radius: 20
   material: # white
-    texture: ./textures/earth.png
+    texture: ../../../Raytracer/textures/earth.png
     color: [1.0,1.0,1.0]
     ka: 0.3
     kd: 0.7
     ks: 0.0
     n: 64
+- type: triangleMesh
+  filename: ../../../Raytracer/meshes/devilduk.obj
+  position: [100,0,800]
+  scale: 80
+- type: triangleMesh
+  filename: ../../../Raytracer/meshes/cube.obj
+  position: [100,50,800]
+  scale: 80

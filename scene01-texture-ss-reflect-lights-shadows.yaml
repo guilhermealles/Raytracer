@@ -16,8 +16,7 @@ Eye: [200,200,1000]
 
 Shadows: true
 MaxRecursionDepth: 2
-SuperSampling:
-  factor: 4
+SuperSamplingFactor: 1
 
 Lights:
 - position: [-200,600,1500]
@@ -55,10 +54,11 @@ Objects:
     n: 32
 - type: sphere
   position: [140,220,400]
-  radius: [50,[0,1,0.7]]
-  angle: 90
+  radius: 50
+  rotationVector: [0,0,1]
+  angle: 180
   material:
-    texture: earthmap1k.png
+    texture: ../../../Raytracer/textures/earth.png
     ka: 0.2
     kd: 0.8
     ks: 0

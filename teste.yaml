@@ -14,31 +14,38 @@
 
 Eye: [200,200,1000]
 
+CameraEye: [200,400,1000]
+CameraLookPoint: [200,250,100]
+CameraUpVector: [0,1,0]
+
 RenderMode: phong
-Shadows: true
 SuperSamplingRate: 1
+Shadows: true
+MaxRecursionDepth: 2
 
 Lights:
 - position: [-200,600,1500]
-  color: [1.0,1.0,1.0]
+  color: [0.4,0.4,0.8]
+- position: [600,600,1500]
+  color: [0.8,0.8,0.4]
 
 Objects:
 
-#- type: tetrahedron
-#  point1: [350,120,100]
-#  point2: [240,120,200]
-#  point3: [300,90,300]
-#  point4: [280,300,120]
-#  material: # blue
-#    color: [0.0,1.0,0.0]
-#    ka: 0.2
-#    kd: 0.7
-#    ks: 0.5
-#    n: 64
+- type: tetrahedron
+  point1: [250,220,400]
+  point2: [140,220,400]
+  point3: [200,190,300]
+  point4: [180,400,400]
+  material: # blue
+    color: [0.0,0.0,1.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.5
+    n: 64
 - type: triangle
-  point1: [280, 290, 100]
-  point2: [270, 350, 20]
-  point3: [60, 200, 140]
+  point1: [350, 100, 100]
+  point2: [270, 350, 100]
+  point3: [60, 200, 100]
   material:
     color: [1.0,0.0,0.0]
     ka: 0.8
@@ -54,3 +61,12 @@ Objects:
     kd: 0.7
     ks: 0.5
     n: 64
+- type: sphere
+  position: [200,200,-1000]
+  radius: 1000
+  material: # grey
+    color: [0.4,0.4,0.4]
+    ka: 0.2
+    kd: 0.8
+    ks: 0
+    n: 1

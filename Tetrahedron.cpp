@@ -13,38 +13,23 @@
 
 Hit Tetrahedron::intersect(const Ray &ray)
 {
-    Triangle *triangle1 = new Triangle(p0, p1, p2);
-    Triangle *triangle2 = new Triangle(p0, p1, p3);
-    Triangle *triangle3 = new Triangle(p0, p2, p3);
-    Triangle *triangle4 = new Triangle(p1, p2, p3);
+    Triangle triangles[4] = {
+        Triangle(p0,p1,p2),
+        Triangle(p0,p1,p3),
+        Triangle(p0,p2,p3),
+        Triangle(p1,p2,p3)
+    };
     
-    double var = std::numeric_limits<double>::infinity();
-    Hit x = Hit::NO_HIT();
+    double closest_hit = std::numeric_limits<double>::infinity();
+    Hit min_hit = Hit::NO_HIT();
     
-    Hit a = triangle1->intersect(ray);
-    if (a.t <= var)
-    {
-        var = a.t;
-        x = a;
-    }
-    Hit b = triangle2->intersect(ray);
-    if (b.t <= var)
-    {
-        var = b.t;
-        x = b;
-    }
-    Hit c = triangle3->intersect(ray);
-    if (c.t <= var)
-    {
-        var = c.t;
-        x = c;
-    }
-    Hit d = triangle4->intersect(ray);
-    if (d.t <= var)
-    {
-        var = d.t;
-        x = d;
+    for (int i=0; i<4; i++) {
+        Hit hit = triangles[i].intersect(ray);
+        if (hit.t < closest_hit) {
+            closest_hit = hit.t;
+            min_hit = hit;
+        }
     }
     
-    return x;
+    return min_hit;
 }

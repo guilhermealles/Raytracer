@@ -70,82 +70,78 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, double* texture_coords)
     // Converts sphere to spherical coordinates.
     // Returns (u,v), which corresponds to the pixel of the texture image that will be the color of (x,y,z).
     
-    Vector p(ray.at(hit.t));
+    Vector intersection_point(ray.at(hit.t));
     
-    double x = p.x, y = p.y, z = p.z;
-    double u, v, w, a, b, c;
     double cosT, sinT;
-    double au, cw, cu, bv, cv, bw, aw, bu, av;
-    double aVVWW, bUUWW, cUUVV;
-    double vv, uu, ww;
+    double xx, zz, zx, yy, zy, yz, xz, yx, xy;
+    double xYYZZ, yXXZZ, zXXYY;
+    double rot_vector_xx, rot_vector_yy, rot_vector_zz;
     double phi = rotation_angle * (PI/180.0);
     double D;
     
-    u = rotation_vector.x;
-    v = rotation_vector.y;
-    w = rotation_vector.z;
-    a = position.x;
-    b = position.y;
-    c = position.z;
-    vv = v * v;
-    uu = u * u;
-    ww = w * w;
+    rot_vector_xx = pow(rotation_vector.x, 2);
+    rot_vector_yy = pow(rotation_vector.y, 2);
+    rot_vector_zz = pow(rotation_vector.z, 2);
     cosT = cos(phi);
     sinT = sin(phi);
     
-    au = a * u;
-    cw = c * w;
-    cu = c * u;
-    bv = b * v;
-    cv = c * v;
-    bw = b * w;
-    aw = a * w;
-    bu = b * u;
-    av = a * v;
-    aVVWW = a * (vv + ww);
-    bUUWW = b * (uu + ww);
-    cUUVV = c * (uu + vv);
+    xx = position.x * rotation_vector.x;
+    zz = position.z * rotation_vector.z;
+    zx = position.z * rotation_vector.x;
+    yy = position.y * rotation_vector.y;
+    zy = position.z * rotation_vector.y;
+    yz = position.y * rotation_vector.z;
+    xz = position.x * rotation_vector.z;
+    yx = position.y * rotation_vector.x;
+    xy = position.x * rotation_vector.y;
     
-    D = u * x + v * y + w * z;
+    xYYZZ = position.x * (rot_vector_yy + rot_vector_zz);
+    yXXZZ = position.y * (rot_vector_xx + rot_vector_zz);
+    zXXYY = position.z * (rot_vector_xx + rot_vector_yy);
     
-    p.x = (aVVWW - u * (bv + cw - D)) * (1 - cosT)
-    + x * cosT + sinT * (-cv + bw - w * y + v * z);
+    D = rotation_vector.x * intersection_point.x + rotation_vector.y * intersection_point.y + rotation_vector.z * intersection_point.z;
     
-    p.y = (bUUWW - v * (au + cw - D)) * (1 - cosT)
-    + y * cosT + sinT * (cu - aw + w * x - u * z);
+    intersection_point.x = (xYYZZ - rotation_vector.x * (yy + zz - D)) * (1 - cosT)
+    + intersection_point.x * cosT + sinT * (-zy + yz - rotation_vector.z * intersection_point.y + rotation_vector.y * intersection_point.z);
     
-    p.z = (cUUVV - w * (au + bv - D)) * (1 - cosT)
-    + z * cosT + sinT * (-bu + av - v * x + u * y);
+    intersection_point.y = (yXXZZ - rotation_vector.y * (xx + zz - D)) * (1 - cosT)
+    + intersection_point.y * cosT + sinT * (zx - xz + rotation_vector.z * intersection_point.x - rotation_vector.x * intersection_point.z);
     
-    Vector d = (position - p).normalized();
+    intersection_point.z = (zXXYY - rotation_vector.z * (xx + yy - D)) * (1 - cosT)
+    + intersection_point.z * cosT + sinT * (-yx + xy - rotation_vector.y * intersection_point.x + rotation_vector.x * intersection_point.y);
     
-    texture_coords[0] = 0.5 + atan2(d.z, d.x) / (2 * PI);
-    texture_coords[1] = 0.5 - asin(d.y) / PI;
+    Vector d = (position - intersection_point).normalized();
     
-    /*
-    
-    double theta = acos ((intersection_point.z - position.z)/r);
-    double phi = atan2 (intersection_point.y - position.y, intersection_point.x - position.x);
-    
-    if (phi < 0.0)
-    {
-        phi = phi + 2*PI;
-    }
-    
-    double u = phi / (2*PI);
-    double v = (PI - theta)/PI;
-    
-    // This might solve the segmentation fault problems
-    if (u > 1.0 || u < 0.0) {
-        u -= ((int)(u/1)); // consider only the decimal parts of u
-    }
-    if (v > 1.0 || v < 0.0) {
-        v -= ((int)(v/1)); // consider only the decimal parts of v
-    }
+    double u = 0.5 + atan2(d.z, d.x) / (2 * PI);
+    double v = 0.5 - asin(d.y) / PI;
     
     texture_coords[0] = u;
     texture_coords[1] = v;
-    */
+    
+    /*
+     
+     double theta = acos ((intersection_point.z - position.z)/r);
+     double phi = atan2 (intersection_point.y - position.y, intersection_point.x - position.x);
+     
+     if (phi < 0.0)
+     {
+     phi = phi + 2*PI;
+     }
+     
+     double u = phi / (2*PI);
+     double v = (PI - theta)/PI;
+     
+     // This might solve the segmentation fault problems
+     if (u > 1.0 || u < 0.0) {
+     u -= ((int)(u/1)); // consider only the decimal parts of u
+     }
+     if (v > 1.0 || v < 0.0) {
+     v -= ((int)(v/1)); // consider only the decimal parts of v
+     }
+     
+     texture_coords[0] = u;
+     texture_coords[1] = v;
+     */
 }
 
 void Sphere::setRotationParameters(Vector vector, double angle)

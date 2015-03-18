@@ -96,8 +96,8 @@ Material* Raytracer::parseMaterial(const YAML::Node& node)
     catch (exception)
     {
         m->texture = NULL;
+        node["color"] >> m->color;
     }
-    node["color"] >> m->color;	
     node["ka"] >> m->ka;
     node["kd"] >> m->kd;
     node["ks"] >> m->ks;
@@ -117,7 +117,6 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["position"] >> pos;
         double r;
         node["radius"] >> r;
-<<<<<<< HEAD
         
         Sphere *sphere = new Sphere(pos,r);
         
@@ -138,14 +137,6 @@ Object* Raytracer::parseObject(const YAML::Node& node)
                 cerr << "Error: expected a rotation angle." << endl;
             }
         }
-        
-        
-        
-        
-        
-=======
-        Sphere *sphere = new Sphere(pos,r);
->>>>>>> origin/master
         returnObject = sphere;
     }
     
@@ -179,6 +170,15 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         Tetrahedron *tetrahedron = new Tetrahedron(vertice1, vertice2, vertice3, vertice4);
         returnObject = tetrahedron;
     }
+    if (objectType == "triangleMesh") {
+        string filename = parseString(node["filename"]);
+        float scaleFactor;
+        node["scale"] >> scaleFactor;
+        Point model_position;
+        model_position = parseTriple(node["position"]);
+        parseTriangleMesh(filename, scaleFactor, model_position);
+        returnObject = NULL;
+    }
 
     if (returnObject) {
         // read the material and attach to object
@@ -197,11 +197,7 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     return new Light(position,color);
 }
 
-<<<<<<< HEAD
-
-=======
-void Raytracer::parseTriangleMesh(const YAML::Node& node, Scene *scene) {
-    string model_filename = parseString(node["MeshFile"]);
+void Raytracer::parseTriangleMesh(string model_filename, float scaleFactor, Point model_position) {
     if (model_filename.empty()) {
         return;
     }
@@ -212,11 +208,9 @@ void Raytracer::parseTriangleMesh(const YAML::Node& node, Scene *scene) {
     
     GLMmodel *model = glmReadOBJ(char_filename);
     
-    float scaleFactor;
-    node["MeshScale"] >> scaleFactor;
     glmScale(model, scaleFactor);
     
-    Material *m = parseMaterial(node["MeshMaterial"]);
+    //Material *m = parseMaterial(node["MeshMaterial"]);
     
     GLMgroup *group = model->groups;
     // Loops through all the groups in this model
@@ -232,24 +226,35 @@ void Raytracer::parseTriangleMesh(const YAML::Node& node, Scene *scene) {
             };
             
             // Add the position of the model to the vertices of the triangles
-            Point model_position;
-            model_position = parseTriple(node["MeshPosition"]);
-            
             triangle_vertices[0] += model_position;
             triangle_vertices[1] += model_position;
             triangle_vertices[2] += model_position;
             
             Triangle *t = new Triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2]);
             
+            Material *m = new Material();
+            if (group->material == 0) {
+                m->color.set(1.0,1.0,1.0);
+                m->ka = 1.0;
+                m->kd = 1.0;
+                m->ks = 1.0;
+                m->n = 32;
+            }
+            else {
+                GLMmaterial glm_m = model->materials[group->material];
+                m->color.set(glm_m.diffuse[0]+glm_m.ambient[0], glm_m.diffuse[1]+glm_m.ambient[1], glm_m.diffuse[2]+glm_m.ambient[2]);
+                m->ka = glm_m.ambient[0]*0.299 + glm_m.ambient[1]*0.587 + glm_m.ambient[2]*0.114;
+                m->kd = glm_m.diffuse[0]*0.299 + glm_m.diffuse[1]*0.587 + glm_m.diffuse[2]*0.114;
+                m->ks = glm_m.emmissive[0]*0.299 + glm_m.emmissive[1]*0.587 + glm_m.emmissive[2]*0.114;
+                m->n = glm_m.shininess;
+            }
             t->material = m;
-            
             scene->addObject(t);
         }
         group = group->next;
     }
     delete[] char_filename;
 }
->>>>>>> origin/master
 
 /*
 * Read a scene from file
@@ -356,13 +361,6 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 cerr << "Warning: Camera parameters not set! Will use eye parameter." << endl;
                 scene->setCameraFlag(false);
             }
-            
-            try {
-                parseTriangleMesh(doc, scene);
-            } catch (exception) {
-                cout << "Triangle Mesh was not found or is invalid!" << endl;
-            }
-            
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];
@@ -378,8 +376,6 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 // Only add object if it is recognized
                 if (obj) {
                     scene->addObject(obj);
-                } else {
-                    cerr << "Warning: found object of unknown type, ignored." << endl;
                 }
             }
 
