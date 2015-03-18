@@ -115,7 +115,31 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["position"] >> pos;
         double r;
         node["radius"] >> r;
-        Sphere *sphere = new Sphere(pos,r);		
+        
+        Sphere *sphere = new Sphere(pos,r);
+        
+        if (node.FindValue("rotationVector"))
+        {
+            Vector rotationVector(0.0, 0.0, 0.0);
+            node["rotationVector"] >> rotationVector;
+            double angle;
+            
+            if (node.FindValue("angle"))
+            {
+                node["angle"] >> angle;
+                
+                sphere->setRotationParameters(rotationVector, angle);
+            }
+            else
+            {
+                cerr << "Error: expected a rotation angle." << endl;
+            }
+        }
+        
+        
+        
+        
+        
         returnObject = sphere;
     }
     
@@ -166,6 +190,8 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     node["color"] >> color;
     return new Light(position,color);
 }
+
+
 
 /*
 * Read a scene from file
@@ -283,6 +309,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             for(YAML::Iterator it=sceneObjects.begin();it!=sceneObjects.end();++it)
             {
                 Object *obj = parseObject(*it);
+                
                 // Only add object if it is recognized
                 if (obj) {
                     scene->addObject(obj);

@@ -63,6 +63,7 @@ public:
     void setShadows(bool state);
     void setMaxRecursionDepth(int recursionDepth);
     void setGoochParameters(double* b, double* y, double* alpha, double* beta);
+    void setRotationParameters (Vector vector, double angle);
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

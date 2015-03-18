@@ -70,8 +70,59 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, double* texture_coords)
     // Converts sphere to spherical coordinates.
     // Returns (u,v), which corresponds to the pixel of the texture image that will be the color of (x,y,z).
     
-    Vector intersection_point(ray.at(hit.t));
+    Vector p(ray.at(hit.t));
     
+    double x = p.x, y = p.y, z = p.z;
+    double u, v, w, a, b, c;
+    double cosT, sinT;
+    double au, cw, cu, bv, cv, bw, aw, bu, av;
+    double aVVWW, bUUWW, cUUVV;
+    double vv, uu, ww;
+    double phi = rotation_angle * (PI/180.0);
+    double D;
+    
+    u = rotation_vector.x;
+    v = rotation_vector.y;
+    w = rotation_vector.z;
+    a = position.x;
+    b = position.y;
+    c = position.z;
+    vv = v * v;
+    uu = u * u;
+    ww = w * w;
+    cosT = cos(phi);
+    sinT = sin(phi);
+    
+    au = a * u;
+    cw = c * w;
+    cu = c * u;
+    bv = b * v;
+    cv = c * v;
+    bw = b * w;
+    aw = a * w;
+    bu = b * u;
+    av = a * v;
+    aVVWW = a * (vv + ww);
+    bUUWW = b * (uu + ww);
+    cUUVV = c * (uu + vv);
+    
+    D = u * x + v * y + w * z;
+    
+    p.x = (aVVWW - u * (bv + cw - D)) * (1 - cosT)
+    + x * cosT + sinT * (-cv + bw - w * y + v * z);
+    
+    p.y = (bUUWW - v * (au + cw - D)) * (1 - cosT)
+    + y * cosT + sinT * (cu - aw + w * x - u * z);
+    
+    p.z = (cUUVV - w * (au + bv - D)) * (1 - cosT)
+    + z * cosT + sinT * (-bu + av - v * x + u * y);
+    
+    Vector d = (position - p).normalized();
+    
+    texture_coords[0] = 0.5 + atan2(d.z, d.x) / (2 * PI);
+    texture_coords[1] = 0.5 - asin(d.y) / PI;
+    
+    /*
     
     double theta = acos ((intersection_point.z - position.z)/r);
     double phi = atan2 (intersection_point.y - position.y, intersection_point.x - position.x);
@@ -94,4 +145,84 @@ void Sphere::mapToTexture (Hit hit, const Ray &ray, double* texture_coords)
     
     texture_coords[0] = u;
     texture_coords[1] = v;
+    */
 }
+
+void Sphere::setRotationParameters(Vector vector, double angle)
+{
+    rotation_vector = vector;
+    rotation_angle = angle;
+}
+
+void Sphere:: rotate()
+{
+    // radius[0]*radius[1].normalized()
+    /*
+    rotation_vector.normalize();
+    r * rotation_vector;
+    
+    // map the vector to (0, 1,0)
+    Vector y(0, 1, 0);
+    
+    // Calculates the angle between the rotation vector and the Y axis
+    double vectors_angle_cos = rotation_vector.dot(y);
+    double vectors_angle = acos(vectors_angle_cos);
+    
+    // Finds an orthogonal rotation vector
+    Vector orthogonal_rotation_vector(rotation_vector.cross(y));
+    
+    // Rotates around the orthogonal_rotation_vector by the vectors_angle
+    
+    double rotationMatrix_y[3][3] = {{cos(vectors_angle), 0.0, -1 * sin(vectors_angle)},
+                                {0.0, 0.0, 1.0},
+                                {sin(vectors_angle), 0.0, cos(vectors_angle)}};
+    double vectorMatrix[3][1] = {{orthogonal_rotation_vector.x}, {orthogonal_rotation_vector.y}, {orthogonal_rotation_vector.z}};
+    double product_y[3][1] = {{0.0}, {0.0}, {0.0}};
+    
+    for (int row = 0; row < 3; row++)
+    {
+        for (int col = 0; col < 3; col++)
+        {
+            // Multiply the row of A by the column of B to get the row, column of product.
+            for (int inner = 0; inner < 1; inner++)
+            {
+                product_y[row][col] += rotationMatrix_y[row][inner] * vectorMatrix[inner][col];
+            }
+        }
+    }
+    
+    // Now we rotate it along X axis.
+    Vector x(1, 0, 0);
+    
+    // Calculates the angle between the rotation vector and the X axis
+    Vector rotation_vector_x(product_y[0][1], product_y[1][1], product_y[2][1]);
+    double vectors_angle_cos_x = rotation_vector_x.dot(x);
+    double vectors_angle_x = acos(vectors_angle_cos_x);
+    
+    // Finds an orthogonal rotation vector
+    Vector orthogonal_rotation_vector_x(rotation_vector_x.cross(x));
+    
+    double rotationMatrix_x[3][3] = {{1.0, 0.0, 0.0},
+                                    {0.0, cos(vectors_angle_x), sin(vectors_angle_x)},
+                                    {0.0, -1* sin(vectors_angle_x), cos(vectors_angle_x)}};
+    double product_x[3][1] = {{0.0}, {0.0}, {0.0}};
+    
+    for (int row = 0; row < 3; row++)
+    {
+        for (int col = 0; col < 3; col++)
+        {
+            // Multiply the row of A by the column of B to get the row, column of product.
+            for (int inner = 0; inner < 1; inner++)
+            {
+                product_x[row][col] += rotationMatrix_x[row][inner] * product_y[inner][col];
+            }
+        }
+    }
+
+    // Now we rotated as asked in the yaml file.
+    //Rotacionar por phi.
+     */
+    
+}
+
+

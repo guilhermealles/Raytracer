@@ -28,9 +28,13 @@ public:
     virtual Color getTextureColor(Hit hit, const Ray &ray);
     
     void mapToTexture(Hit hit, const Ray &ray, double* texture_coords);
+    void setRotationParameters (Vector rotation_vector, double angle);
+    void rotate();
 
     const Point position;
     const double r;
+    Vector rotation_vector;
+    double rotation_angle = 0.0; // default value. It's only valid if not zero
 };
 
 #endif /* end of include guard: SPHERE_H_115209AE */
