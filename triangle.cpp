@@ -51,6 +51,14 @@ Hit Triangle::intersect(const Ray &ray)
     
     Vector normal = bc.cross(ba);
     normal.normalize();
-    return Hit(t, normal);
     
+    Vector p = ray.D.cross(bc);
+    
+    double ba_dot_p = ba.dot(p);
+    double inv_ba_dot_p = 1/ba_dot_p;
+    Vector s = ray.O - v0;
+    Vector q = s.cross(ba);
+    t = inv_ba_dot_p * (bc.dot(q));
+    
+    return Hit(t, normal);
 }

@@ -22,7 +22,8 @@ int main(int argc, char *argv[])
 {
     cout << "Introduction to Computer Graphics - Raytracer" << endl << endl;
     
-    string const SCENE_FILE = "../../../Raytracer/teste.yaml";    
+    string const SCENE_FILE = "../../../Raytracer/texture.yaml";
+
     string const OUTPUT_FILE = "../../../Raytracer/out.png";
 
     Raytracer raytracer;

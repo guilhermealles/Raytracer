@@ -29,7 +29,7 @@ Objects:
   position: [90,320,100]
   radius: 50
   material: # blue
-    color: [0.0,0.0,1.0]
+    texture: ../../../Raytracer/textures/texture3.png
     ka: 0.2
     kd: 0.7
     ks: 0.5
@@ -38,7 +38,7 @@ Objects:
   position: [210,270,300]
   radius: 50
   material: # green
-    color: [0.0,1.0,0.0]
+    texture: ../../../Raytracer/textures/texture4.png
     ka: 0.2
     kd: 0.3
     ks: 0.5
@@ -47,7 +47,7 @@ Objects:
   position: [290,170,150]
   radius: 50
   material: # red
-    color: [1.0,0.0,0.0]
+    texture: ../../../Raytracer/textures/texture1.png
     ka: 0.2
     kd: 0.7
     ks: 0.8
@@ -55,8 +55,6 @@ Objects:
 - type: sphere
   position: [140,220,400]
   radius: 50
-  rotationVector: [0,0,1]
-  angle: 180
   material:
     texture: ../../../Raytracer/textures/earth.png
     ka: 0.2
@@ -67,7 +65,7 @@ Objects:
   position: [110,130,200]
   radius: 50
   material: # orange
-    color: [1.0,0.5,0.0]
+    texture: ../../../Raytracer/textures/texture2.png
     ka: 0.2
     kd: 0.8
     ks: 0.5

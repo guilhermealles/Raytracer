@@ -23,9 +23,11 @@ Hit Tetrahedron::intersect(const Ray &ray)
     double closest_hit = std::numeric_limits<double>::infinity();
     Hit min_hit = Hit::NO_HIT();
     
-    for (int i=0; i<4; i++) {
+    for (int i=0; i<4; i++)
+    {
         Hit hit = triangles[i].intersect(ray);
-        if (hit.t < closest_hit) {
+        if (hit.t < closest_hit)
+        {
             closest_hit = hit.t;
             min_hit = hit;
         }

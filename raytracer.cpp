@@ -124,6 +124,7 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         {
             Vector rotationVector(0.0, 0.0, 0.0);
             node["rotationVector"] >> rotationVector;
+            
             double angle;
             
             if (node.FindValue("angle"))
@@ -198,6 +199,7 @@ Light* Raytracer::parseLight(const YAML::Node& node)
 }
 
 void Raytracer::parseTriangleMesh(string model_filename, float scaleFactor, Point model_position) {
+    
     if (model_filename.empty()) {
         return;
     }
