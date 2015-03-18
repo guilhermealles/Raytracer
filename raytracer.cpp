@@ -22,9 +22,11 @@
 #include "light.h"
 #include "image.h"
 #include "yaml/yaml.h"
+#include "glm.h"
 #include <ctype.h>
 #include <fstream>
 #include <assert.h>
+#include <stdlib.h>
 
 // Functions to ease reading from YAML input
 void operator >> (const YAML::Node& node, Triple& t);
@@ -115,6 +117,7 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["position"] >> pos;
         double r;
         node["radius"] >> r;
+<<<<<<< HEAD
         
         Sphere *sphere = new Sphere(pos,r);
         
@@ -140,6 +143,9 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         
         
         
+=======
+        Sphere *sphere = new Sphere(pos,r);
+>>>>>>> origin/master
         returnObject = sphere;
     }
     
@@ -191,7 +197,59 @@ Light* Raytracer::parseLight(const YAML::Node& node)
     return new Light(position,color);
 }
 
+<<<<<<< HEAD
 
+=======
+void Raytracer::parseTriangleMesh(const YAML::Node& node, Scene *scene) {
+    string model_filename = parseString(node["MeshFile"]);
+    if (model_filename.empty()) {
+        return;
+    }
+    // The next 3 lines convert "std::string" type to "char*"
+    char *char_filename = new char[model_filename.size() + 1];
+    std::copy(model_filename.begin(), model_filename.end(), char_filename);
+    char_filename[model_filename.size()] = '\0';
+    
+    GLMmodel *model = glmReadOBJ(char_filename);
+    
+    float scaleFactor;
+    node["MeshScale"] >> scaleFactor;
+    glmScale(model, scaleFactor);
+    
+    Material *m = parseMaterial(node["MeshMaterial"]);
+    
+    GLMgroup *group = model->groups;
+    // Loops through all the groups in this model
+    while (group) {
+        // Loops through all the triangles in this group
+        for (unsigned int i=0; i<group->numtriangles; i++) {
+            GLMtriangle triangle = model->triangles[group->triangles[i]];
+            Vector triangle_indices(triangle.vindices[0], triangle.vindices[1], triangle.vindices[2]);
+            Vector triangle_vertices[3] = {
+                Vector(model->vertices[(int)triangle_indices.data[0]*3], model->vertices[(int)triangle_indices.data[0]*3+1], model->vertices[(int)triangle_indices.data[0]*3+2]),
+                Vector(model->vertices[(int)triangle_indices.data[1]*3], model->vertices[(int)triangle_indices.data[1]*3+1], model->vertices[(int)triangle_indices.data[1]*3+2]),
+                Vector(model->vertices[(int)triangle_indices.data[2]*3], model->vertices[(int)triangle_indices.data[2]*3+1], model->vertices[(int)triangle_indices.data[2]*3+2]),
+            };
+            
+            // Add the position of the model to the vertices of the triangles
+            Point model_position;
+            model_position = parseTriple(node["MeshPosition"]);
+            
+            triangle_vertices[0] += model_position;
+            triangle_vertices[1] += model_position;
+            triangle_vertices[2] += model_position;
+            
+            Triangle *t = new Triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2]);
+            
+            t->material = m;
+            
+            scene->addObject(t);
+        }
+        group = group->next;
+    }
+    delete[] char_filename;
+}
+>>>>>>> origin/master
 
 /*
 * Read a scene from file
@@ -230,7 +288,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
                     if (doc.FindValue("GoochParameters"))
                     {
                         double b, y, alpha, beta;
-                        const auto& gooch = doc["GoochParameters"];
+                        const YAML::Node& gooch = doc["GoochParameters"];
                         gooch["alpha"] >> alpha;
                         gooch["beta"] >> beta;
                         gooch["b"] >> b;
@@ -253,7 +311,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
             try {
                 const YAML::Node& antiAliasingNode = doc["SuperSamplingRate"];
                 string superSamplingRateString = parseString(antiAliasingNode);
-                int superSamplingRate = (int) std::strtol(superSamplingRateString.c_str(), NULL, 10);
+                int superSamplingRate = (int) strtol(superSamplingRateString.c_str(), NULL, 10);
                 if (superSamplingRate > 0) {
                     scene->setSuperSampling(superSamplingRate);
                 }
@@ -298,6 +356,13 @@ bool Raytracer::readScene(const std::string& inputFilename)
                 cerr << "Warning: Camera parameters not set! Will use eye parameter." << endl;
                 scene->setCameraFlag(false);
             }
+            
+            try {
+                parseTriangleMesh(doc, scene);
+            } catch (exception) {
+                cout << "Triangle Mesh was not found or is invalid!" << endl;
+            }
+            
 
             // Read and parse the scene objects
             const YAML::Node& sceneObjects = doc["Objects"];

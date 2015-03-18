@@ -1,9 +1,19 @@
 Eye: [50,0,1000]
 
 RenderMode: phong
-SuperSamplingRate: 1
+SuperSamplingRate: 4
 Shadows: false
 MaxRecursionDepth: 1
+
+MeshFile: ./meshes/devilduk.obj
+MeshPosition: [100,0,800]
+MeshScale: 80
+MeshMaterial:
+  color: [0.5,0.5,0.5]
+  ka: 0.3
+  kd: 0.7
+  ks: 0.0
+  n: 128
 
 Lights:
 - position: [-200,600,1500]
@@ -11,10 +21,10 @@ Lights:
 
 Objects:
 - type: sphere
-  position: [150,100,400]
-  radius: 80
+  position: [100,100,400]
+  radius: 20
   material: # white
-    texture: ../../../Raytracer/textures/earth.png
+    texture: ./textures/earth.png
     color: [1.0,1.0,1.0]
     ka: 0.3
     kd: 0.7
