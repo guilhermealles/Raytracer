@@ -220,8 +220,8 @@ void Raytracer::parseTriangleMesh(string model_filename, float scaleFactor, Poin
         // Loops through all the triangles in this group
         for (unsigned int i=0; i<group->numtriangles; i++) {
             GLMtriangle triangle = model->triangles[group->triangles[i]];
-            Vector triangle_indices(triangle.vindices[0], triangle.vindices[1], triangle.vindices[2]);
-            Vector triangle_vertices[3] = {
+            Triple triangle_indices(triangle.vindices[0], triangle.vindices[1], triangle.vindices[2]);
+            Triple triangle_vertices[3] = {
                 Point(model->vertices[(int)triangle_indices.data[0]*3], model->vertices[(int)triangle_indices.data[0]*3+1], model->vertices[(int)triangle_indices.data[0]*3+2]),
                 Point(model->vertices[(int)triangle_indices.data[1]*3], model->vertices[(int)triangle_indices.data[1]*3+1], model->vertices[(int)triangle_indices.data[1]*3+2]),
                 Point(model->vertices[(int)triangle_indices.data[2]*3], model->vertices[(int)triangle_indices.data[2]*3+1], model->vertices[(int)triangle_indices.data[2]*3+2]),

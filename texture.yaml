@@ -1,8 +1,8 @@
 Eye: [50,0,1000]
 
 RenderMode: phong
-SuperSamplingRate: 1
-Shadows: true
+SuperSamplingRate: 4
+Shadows: false
 MaxRecursionDepth: 1
 
 MeshFile: ../../../Raytracer/meshes/devilduk.obj
@@ -28,7 +28,7 @@ Objects:
   filename: ../../../Raytracer/meshes/devilduk.obj
   position: [100,0,800]
   scale: 80
-- type: triangleMesh
-  filename: ../../../Raytracer/meshes/cube.obj
-  position: [100,50,800]
-  scale: 80
+#- type: triangleMesh
+#  filename: ../../../Raytracer/meshes/cube.obj
+#  position: [100,50,800]
+#  scale: 80
