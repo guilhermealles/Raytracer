@@ -2,7 +2,7 @@ Eye: [50,0,1000]
 
 RenderMode: phong
 SuperSamplingRate: 1
-Shadows: false
+Shadows: true
 MaxRecursionDepth: 1
 
 MeshFile: ../../../Raytracer/meshes/devilduk.obj
